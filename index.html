@@ -1,1989 +1,502 @@
 <!DOCTYPE html>
-<html lang="zh-TW" class="scroll-smooth">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>岡山四國自駕 2026</title>
-  <meta name="apple-mobile-web-app-title" content="岡山四國自駕" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <!-- Static SVG Data URI fallback + Instant 180x180 & 512x512 Canvas PNG for iOS Home Screen Icon -->
-  <link id="apple-touch-icon-link" rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23ffffff'/%3E%3Cpath d='M25 88 C25 134 50 162 90 162 C130 162 155 134 155 88 L155 70 L25 70 Z' fill='%23fcece2'/%3E%3Cpath d='M62 100 C68 73 82 63 90 70 C98 63 112 73 118 100 Z' fill='%23ffffff'/%3E%3Cpath d='M90 34 C83 24 67 23 50 32 C30 43 20 66 20 89 C20 96 24 100 31 100 L62 100 C66 100 68 97 70 92 C75 75 84 68 90 73 C96 68 105 75 110 92 C112 97 114 100 118 100 L149 100 C156 100 160 96 160 89 C160 66 150 43 130 32 C113 23 97 24 90 34 Z' fill='%236e5d4b'/%3E%3Cpath d='M84 40 C86 17 117 9 151 27 C129 41 103 45 84 40 Z' fill='%237bb657'/%3E%3Cpath d='M88 38 C106 28 126 24 146 27' fill='none' stroke='%2319803e' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M89 95 C81 99 74 97 71 93 C77 89 84 91 89 95 Z' fill='%237bb657'/%3E%3Cpath d='M91 95 C99 99 106 97 109 93 C103 89 96 91 91 95 Z' fill='%237bb657'/%3E%3Cpath d='M90 67 C97 72 101 79 100 86 C99 92 94 95 90 94 C86 95 81 92 80 86 C79 79 83 72 90 67 Z' fill='%23f38bb2'/%3E%3Cellipse cx='59' cy='117' rx='7.2' ry='11.5' fill='%236e5d4b'/%3E%3Cellipse cx='121' cy='117' rx='7.2' ry='11.5' fill='%236e5d4b'/%3E%3Cpath d='M75 136 C78 147 102 147 105 136' fill='none' stroke='%236e5d4b' stroke-width='5.2' stroke-linecap='round'/%3E%3C/svg%3E" />
-  <link id="favicon-link" rel="icon" type="image/png" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-main: #f2f6fa;
-      --card-bg: #ffffff;
-      --primary-blue: #1a6bc4;
-      --accent-orange: #ef6c33;
-      --text-dark: #1e293b;
-    }
-
-    body {
-      font-family: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #dce5f0;
-      color: var(--text-dark);
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* App Container mimicking sleek mobile viewport on desktop */
-    .app-shell {
-      max-width: 520px;
-      margin: 0 auto;
-      background-color: var(--bg-main);
-      min-height: 100vh;
-      box-shadow: 0 12px 45px rgba(15, 35, 65, 0.14);
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    /* Card Shadow matching video */
-    .trip-card {
-      background: #ffffff;
-      border-radius: 18px;
-      box-shadow: 0 6px 20px rgba(15, 45, 80, 0.06);
-      border: 1px solid rgba(226, 232, 240, 0.7);
-    }
-
-    /* Hide Scrollbars for horizontal carousels & nav */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    /* Horizontal Snap Carousel */
-    .snap-carousel {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      gap: 14px;
-      padding: 4px 20px 14px 20px;
-      scroll-padding-left: 20px;
-    }
-    .snap-item {
-      scroll-snap-align: start;
-      flex: 0 0 76%;
-      max-width: 310px;
-    }
-
-    /* Floating Airplane Animation */
-    @keyframes floatCloud {
-      0%, 100% { transform: translateY(0px) translateX(0px); }
-      50% { transform: translateY(-6px) translateX(4px); }
-    }
-    .floating-plane {
-      animation: floatCloud 3.6s ease-in-out infinite;
-    }
-
-    /* Frosted glass badges */
-    .glass-badge {
-      background: rgba(30, 41, 59, 0.52);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.28);
-    }
-
-    /* Timeline vertical line */
-    .timeline-line {
-      position: absolute;
-      left: 69px;
-      top: 18px;
-      bottom: 18px;
-      width: 2.5px;
-      background: #cbd5e1;
-      z-index: 1;
-    }
-
-    /* Accordion smooth transition */
-    .accordion-content {
-      transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
-      overflow: hidden;
-    }
-
-    /* Sticky Pill Nav Active State */
-    .nav-pill {
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-    .nav-pill.active {
-      background-color: #1a6bc4;
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(26, 107, 196, 0.32);
-      border-color: #1a6bc4;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>岡山四國自駕 2026</title>
+<meta name="apple-mobile-web-app-title" content="岡山四國自駕" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link id="apple-touch-icon-link" rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20180%20180'%3E%3Crect%20width='180'%20height='180'%20fill='%23ffffff'/%3E%3Cpath%20d='M25%2088%20C25%20134%2050%20162%2090%20162%20C130%20162%20155%20134%20155%2088%20L155%2070%20L25%2070%20Z'%20fill='%23fcece2'/%3E%3Cpath%20d='M62%20100%20C68%2073%2082%2063%2090%2070%20C98%2063%20112%2073%20118%20100%20Z'%20fill='%23ffffff'/%3E%3Cpath%20d='M90%2034%20C83%2024%2067%2023%2050%2032%20C30%2043%2020%2066%2020%2089%20C20%2096%2024%20100%2031%20100%20L62%20100%20C66%20100%2068%2097%2070%2092%20C75%2075%2084%2068%2090%2073%20C96%2068%20105%2075%20110%2092%20C112%2097%20114%20100%20118%20100%20L149%20100%20C156%20100%20160%2096%20160%2089%20C160%2066%20150%2043%20130%2032%20C113%2023%2097%2024%2090%2034%20Z'%20fill='%236e5d4b'/%3E%3Cpath%20d='M84%2040%20C86%2017%20117%209%20151%2027%20C129%2041%20103%2045%2084%2040%20Z'%20fill='%237bb657'/%3E%3Cpath%20d='M88%2038%20C106%2028%20126%2024%20146%2027'%20fill='none'%20stroke='%2319803e'%20stroke-width='3'%20stroke-linecap='round'/%3E%3Cpath%20d='M89%2095%20C81%2099%2074%2097%2071%2093%20C77%2089%2084%2091%2089%2095%20Z'%20fill='%237bb657'/%3E%3Cpath%20d='M91%2095%20C99%2099%20106%2097%20109%2093%20C103%2089%2096%2091%2091%2095%20Z'%20fill='%237bb657'/%3E%3Cpath%20d='M90%2067%20C97%2072%20101%2079%20100%2086%20C99%2092%2094%2095%2090%2094%20C86%2095%2081%2092%2080%2086%20C79%2079%2083%2072%2090%2067%20Z'%20fill='%23f38bb2'/%3E%3Cellipse%20cx='59'%20cy='117'%20rx='7.2'%20ry='11.5'%20fill='%236e5d4b'/%3E%3Cellipse%20cx='121'%20cy='117'%20rx='7.2'%20ry='11.5'%20fill='%236e5d4b'/%3E%3Cpath%20d='M75%20136%20C78%20147%20102%20147%20105%20136'%20fill='none'%20stroke='%236e5d4b'%20stroke-width='5.2'%20stroke-linecap='round'/%3E%3C/svg%3E" />
+<link id="favicon-link" rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20180%20180'%3E%3Crect%20width='180'%20height='180'%20fill='%23ffffff'/%3E%3Cpath%20d='M25%2088%20C25%20134%2050%20162%2090%20162%20C130%20162%20155%20134%20155%2088%20L155%2070%20L25%2070%20Z'%20fill='%23fcece2'/%3E%3Cpath%20d='M62%20100%20C68%2073%2082%2063%2090%2070%20C98%2063%20112%2073%20118%20100%20Z'%20fill='%23ffffff'/%3E%3Cpath%20d='M90%2034%20C83%2024%2067%2023%2050%2032%20C30%2043%2020%2066%2020%2089%20C20%2096%2024%20100%2031%20100%20L62%20100%20C66%20100%2068%2097%2070%2092%20C75%2075%2084%2068%2090%2073%20C96%2068%20105%2075%20110%2092%20C112%2097%20114%20100%20118%20100%20L149%20100%20C156%20100%20160%2096%20160%2089%20C160%2066%20150%2043%20130%2032%20C113%2023%2097%2024%2090%2034%20Z'%20fill='%236e5d4b'/%3E%3Cpath%20d='M84%2040%20C86%2017%20117%209%20151%2027%20C129%2041%20103%2045%2084%2040%20Z'%20fill='%237bb657'/%3E%3Cpath%20d='M88%2038%20C106%2028%20126%2024%20146%2027'%20fill='none'%20stroke='%2319803e'%20stroke-width='3'%20stroke-linecap='round'/%3E%3Cpath%20d='M89%2095%20C81%2099%2074%2097%2071%2093%20C77%2089%2084%2091%2089%2095%20Z'%20fill='%237bb657'/%3E%3Cpath%20d='M91%2095%20C99%2099%20106%2097%20109%2093%20C103%2089%2096%2091%2091%2095%20Z'%20fill='%237bb657'/%3E%3Cpath%20d='M90%2067%20C97%2072%20101%2079%20100%2086%20C99%2092%2094%2095%2090%2094%20C86%2095%2081%2092%2080%2086%20C79%2079%2083%2072%2090%2067%20Z'%20fill='%23f38bb2'/%3E%3Cellipse%20cx='59'%20cy='117'%20rx='7.2'%20ry='11.5'%20fill='%236e5d4b'/%3E%3Cellipse%20cx='121'%20cy='117'%20rx='7.2'%20ry='11.5'%20fill='%236e5d4b'/%3E%3Cpath%20d='M75%20136%20C78%20147%20102%20147%20105%20136'%20fill='none'%20stroke='%236e5d4b'%20stroke-width='5.2'%20stroke-linecap='round'/%3E%3C/svg%3E" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#f2f6fa;--blue:#1a6bc4;--navy:#164e87;--or:#ef6c33}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:#dce5f0;margin:0;color:#1e293b;-webkit-tap-highlight-color:transparent}
+.shell{max-width:520px;margin:0 auto;background:var(--bg);min-height:100vh;overflow-x:hidden;padding-bottom:64px}
+.card{background:#fff;border-radius:18px;box-shadow:0 6px 20px rgba(15,45,80,.06);border:1px solid rgba(226,232,240,.7)}
+.noscroll::-webkit-scrollbar{display:none}.noscroll{scrollbar-width:none}
+.snap{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;padding:4px 20px 14px}
+.snap>div{scroll-snap-align:start;flex:0 0 78%;max-width:315px}
+.pill.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tl{position:relative}.tl:before{content:"";position:absolute;left:67px;top:14px;bottom:14px;width:2px;background:#cbd5e1}
+.ph{background:linear-gradient(135deg,#164e87,#1a6bc4);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:12px;text-align:center;padding:8px}
+.sec{scroll-margin-top:64px}
+.mc{font-family:ui-monospace,Menlo,monospace}
+</style>
 </head>
 <body>
+<div class="shell">
 
-<div class="app-shell pb-16">
-
-  <!-- ================= HERO SECTION ================= -->
-  <header class="relative w-full pt-10 pb-6 px-5 text-center overflow-hidden">
-    <!-- Background Image with Bottom Fade into #f2f6fa -->
-    <div class="absolute inset-0 z-0">
-      <img 
-        src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1000&q=80" 
-        alt="Seto Inland Sea & Japan Autumn" 
-        class="w-full h-full object-cover object-center brightness-90"
-        onerror="this.src='https://placehold.co/800x600/2c5282/ffffff?text=Okayama+Shikoku+Trip'"
-      />
-      <div class="absolute inset-0 bg-gradient-to-b from-slate-900/45 via-slate-900/35 to-[#f2f6fa]"></div>
+<header class="ph" id="hero" style="display:block;padding:40px 20px 24px;text-align:center;position:relative">
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,30,50,.45),rgba(15,30,50,.25) 60%,#f2f6fa)"></div>
+  <div style="position:relative">
+    <div style="font-size:11px;letter-spacing:.2em;font-weight:800">2026 AUTUMN ROAD TRIP IN JAPAN</div>
+    <h1 style="font-size:22px;font-weight:800;line-height:1.35;margin:6px 0">跨海大橋與四國秘境：岡山・高松・大步危祖谷・淡路島・神戶 5天4夜自駕遊</h1>
+    <div style="font-size:13px;font-weight:600">2026/11/25 (三) － 11/29 (日)</div>
+    <div class="bg-white/95 rounded-3xl py-4 px-5 mt-4 mx-auto" style="max-width:360px;color:#1e293b">
+      <p style="color:#c85a28;font-weight:700;font-size:14px;margin:0 0 4px">岡山四國出發倒數</p>
+      <div id="cd" style="color:var(--blue);font-weight:800;font-size:22px"></div>
+      <p style="font-size:11px;color:#94a3b8;margin:4px 0 0">目標起飛：2026/11/25 (三) 11:10 IT214 台灣虎航</p>
     </div>
-
-    <!-- Hero Content -->
-    <div class="relative z-10 flex flex-col items-center">
-      <!-- Floating Plane & Cloud -->
-      <div class="floating-plane text-4xl mb-2 select-none drop-shadow-md">
-        ☁️✈️
-      </div>
-
-      <div class="text-white/90 text-[11px] font-extrabold tracking-[0.2em] uppercase drop-shadow mb-1">
-        2026 AUTUMN ROAD TRIP IN JAPAN
-      </div>
-
-      <h1 class="text-white text-[22px] sm:text-[25px] font-extrabold tracking-tight leading-snug drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)] px-2">
-        跨海大橋與四國秘境：岡山・高松・大步危祖谷・淡路島・神戶 5天4夜自駕遊
-      </h1>
-
-      <div class="flex items-center gap-3 text-white/95 font-semibold text-xs sm:text-sm tracking-widest mt-2 mb-5 drop-shadow">
-        <span class="w-6 h-[1.5px] bg-white/70 rounded"></span>
-        <span>2026/11/25 (三) － 11/29 (日)</span>
-        <span class="w-6 h-[1.5px] bg-white/70 rounded"></span>
-      </div>
-
-      <!-- White Countdown Card (Matches Video) -->
-      <div class="w-full max-w-[360px] bg-white/95 backdrop-blur-md rounded-[22px] py-4 px-5 shadow-[0_10px_28px_rgba(15,35,65,0.16)] border border-white">
-        <p class="text-[#c85a28] font-bold text-sm tracking-wide mb-1.5">
-          岡山四國出發倒數
-        </p>
-        <div id="countdown-display" class="text-[#1a6bc4] font-extrabold text-[22px] sm:text-[24px] tracking-tight flex items-baseline justify-center gap-1.5">
-          <!-- Populated by JS -->
-          <span>10天</span>
-          <span>00小時</span>
-          <span>42分</span>
-          <span class="text-[#ef6c33]">00秒</span>
-        </div>
-        <p id="countdown-sub" class="text-[11px] text-slate-400 mt-1">
-          目標起飛：2026/11/25 (三) 11:10 IT214 台灣虎航
-        </p>
-      </div>
-
-      <!-- 3 Frosted Glass Pill Badges -->
-      <div class="flex flex-wrap items-center justify-center gap-2 mt-4">
-        <span class="glass-badge text-white text-[11px] font-semibold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
-          ✈️ 台灣虎航 IT214/IT215
-        </span>
-        <span class="glass-badge text-white text-[11px] font-semibold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
-          ⛰️ 大步危遊船＆祖谷藤蔓橋
-        </span>
-        <span class="glass-badge text-white text-[11px] font-semibold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
-          🌊 鳴門漩渦＆淡路島
-        </span>
-        <span class="glass-badge text-white text-[11px] font-semibold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
-          🥩 神戶牛排＆⛩️吉備津彥神社
-        </span>
-      </div>
+    <div class="flex flex-wrap justify-center gap-2 mt-4" style="font-size:11px;font-weight:600">
+      <span style="background:rgba(30,41,59,.6);padding:6px 12px;border-radius:99px">✈️ 台灣虎航 IT214/IT215</span>
+      <span style="background:rgba(30,41,59,.6);padding:6px 12px;border-radius:99px">⛰️ 大步危遊船＆祖谷藤蔓橋</span>
+      <span style="background:rgba(30,41,59,.6);padding:6px 12px;border-radius:99px">🌊 鳴門漩渦＆淡路島</span>
+      <span style="background:rgba(30,41,59,.6);padding:6px 12px;border-radius:99px">🥩 神戶牛排＆⛩️吉備津彥神社</span>
     </div>
-  </header>
-
-  <!-- ================= STICKY PILL NAVIGATION ================= -->
-  <nav class="sticky top-0 z-40 bg-[#f2f6fa]/95 backdrop-blur-md border-b border-slate-200/70 py-2.5">
-    <div id="pill-nav" class="flex items-center gap-2 overflow-x-auto no-scrollbar px-4">
-      <button onclick="scrollToSection('sec-flights', this)" class="nav-pill active text-xs font-bold px-3.5 py-2 rounded-full bg-white text-slate-700 border border-slate-200/90 shadow-sm flex items-center gap-1">
-        ✈️ 航班
-      </button>
-      <button onclick="scrollToSection('sec-weather', this)" class="nav-pill text-xs font-bold px-3.5 py-2 rounded-full bg-white text-slate-700 border border-slate-200/90 shadow-sm flex items-center gap-1">
-        🌤️ 天氣
-      </button>
-      <button onclick="scrollToSection('sec-hotels', this)" class="nav-pill text-xs font-bold px-3.5 py-2 rounded-full bg-white text-slate-700 border border-slate-200/90 shadow-sm flex items-center gap-1">
-        🏨 住宿
-      </button>
-      <button onclick="scrollToSection('sec-route', this)" class="nav-pill text-xs font-bold px-3.5 py-2 rounded-full bg-white text-slate-700 border border-slate-200/90 shadow-sm flex items-center gap-1">
-        🚗 五日路線
-      </button>
-      <button onclick="scrollToSection('sec-spots', this)" class="nav-pill text-xs font-bold px-3.5 py-2 rounded-full bg-white text-slate-700 border border-slate-200/90 shadow-sm flex items-center gap-1">
-        📍 必訪景點
-      </button>
-      <button onclick="scrollToSection('sec-food', this)" class="nav-pill text-xs font-bold px-3.5 py-2 rounded-full bg-white text-slate-700 border border-slate-200/90 shadow-sm flex items-center gap-1">
-        🍜 美食
-      </button>
-      <button onclick="openAndScrollDay(1, this)" class="nav-pill text-xs font-bold px-3.5 py-2 rounded-full bg-white text-slate-700 border border-slate-200/90 shadow-sm flex items-center gap-1">
-        📅 每日行程 (Day 1~5)
-      </button>
-      <button onclick="scrollToSection('sec-mapcode', this)" class="nav-pill text-xs font-bold px-3.5 py-2 rounded-full bg-white text-slate-700 border border-slate-200/90 shadow-sm flex items-center gap-1">
-        🧭 MapCode總表
-      </button>
-      <button onclick="scrollToSection('sec-tips', this)" class="nav-pill text-xs font-bold px-3.5 py-2 rounded-full bg-white text-slate-700 border border-slate-200/90 shadow-sm flex items-center gap-1">
-        💡 提醒
-      </button>
-    </div>
-  </nav>
-
-  <!-- ================= MAIN CONTENT ================= -->
-  <main class="space-y-8 mt-4">
-
-    <!-- 1. ✈️ 航班資訊 -->
-    <section id="sec-flights" class="px-5 scroll-mt-16">
-      <h2 class="text-[20px] font-extrabold text-[#164e87] flex items-center gap-2 mb-3.5">
-        <span>✈️</span> 航班資訊
-      </h2>
-
-      <div class="space-y-4">
-        <!-- Outbound Flight Card -->
-        <div class="trip-card p-5 relative overflow-hidden">
-          <div class="flex items-center justify-between mb-2">
-            <span class="inline-flex items-center gap-1 text-xs font-bold text-[#1a6bc4] bg-blue-50 px-2.5 py-1 rounded-md">
-              ✈️ 去程航班
-            </span>
-            <span class="text-xs font-semibold text-slate-500">2026/11/25 (三)</span>
-          </div>
-
-          <div class="text-base font-extrabold text-slate-800">IT214 台灣虎航</div>
-          <div class="text-xs font-medium text-slate-500 mt-0.5">桃園機場 (TPE) ➔ 岡山桃太郎機場 (OKJ)</div>
-
-          <div class="flex items-center gap-3 my-3">
-            <span class="text-[26px] font-extrabold text-[#164e87] tracking-tight">11:10</span>
-            <div class="flex flex-col items-center">
-              <span class="text-[10px] font-bold text-slate-400">飛行 2h25m</span>
-              <span class="text-slate-400 font-bold leading-none">➔</span>
-            </div>
-            <span class="text-[26px] font-extrabold text-[#164e87] tracking-tight">14:35</span>
-          </div>
-
-          <!-- Blue Left-Border Callout Box -->
-          <div class="bg-[#f0f7ff] border-l-4 border-[#1a6bc4] rounded-r-xl p-3 text-xs space-y-1.5">
-            <div class="font-bold text-[#164e87] flex items-center gap-1.5">
-              <span>🕒</span> 09:10 前抵達桃園機場（起飛前 2 小時）
-            </div>
-            <p class="text-slate-600 leading-relaxed">
-              💡 <strong>出關取車必辦：</strong>請向租車公司租借<strong>「一般計次扣款 ETC 卡」</strong>（不買 SEP 吃到飽），三大跨海大橋享 <strong>46 折現省 3,930 日圓</strong>，Day 5 還可直接下吉備 Smart IC！
-            </p>
-          </div>
-        </div>
-
-        <!-- Return Flight Card -->
-        <div class="trip-card p-5 relative overflow-hidden">
-          <div class="flex items-center justify-between mb-2">
-            <span class="inline-flex items-center gap-1 text-xs font-bold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-md">
-              🛫 回程航班
-            </span>
-            <span class="text-xs font-semibold text-slate-500">2026/11/29 (日)</span>
-          </div>
-
-          <div class="text-base font-extrabold text-slate-800">IT215 台灣虎航</div>
-          <div class="text-xs font-medium text-slate-500 mt-0.5">岡山桃太郎機場 (OKJ) ➔ 桃園機場 (TPE)</div>
-
-          <div class="flex items-center gap-3 my-3">
-            <span class="text-[26px] font-extrabold text-teal-800 tracking-tight">15:25</span>
-            <div class="flex flex-col items-center">
-              <span class="text-[10px] font-bold text-slate-400">飛行 3h10m</span>
-              <span class="text-slate-400 font-bold leading-none">➔</span>
-            </div>
-            <span class="text-[26px] font-extrabold text-teal-800 tracking-tight">17:35</span>
-          </div>
-
-          <!-- Teal/Amber Callout Box -->
-          <div class="bg-[#f2fbf9] border-l-4 border-teal-600 rounded-r-xl p-3 text-xs space-y-1.5">
-            <div class="font-bold text-teal-900 flex items-center gap-1.5">
-              <span>🧳</span> 建議抵達時間：13:15 抵達岡山機場最充裕
-            </div>
-            <p class="text-slate-600 leading-relaxed">
-              🚨 <strong>14:40 準時關櫃（起飛前45分鐘）！</strong>12:15 從吉備津神社出發 ➔ 機場旁 ENEOS 加滿油（Regular 紅槍）➔ 13:10 豐田租車岡山機場店還車接駁最從容。
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. 🌤️ 岡山・四國・神戶 五日天氣 (Immediate Zero-Blank Render + Per-City Open-Meteo Live Fetch) -->
-    <section id="sec-weather" class="px-5 scroll-mt-16">
-      <div class="flex items-center justify-between mb-3.5">
-        <h2 class="text-[20px] font-extrabold text-[#164e87] flex items-center gap-2">
-          <span>🌤️</span> 五日天氣預報
-        </h2>
-        <span class="text-xs font-bold text-[#1a6bc4] bg-blue-50 px-3 py-1 rounded-full border border-blue-200/80">
-          11/25 - 11/29
-        </span>
-      </div>
-
-      <div class="trip-card p-4">
-        <!-- 5-Column Weather Grid (Pre-rendered in HTML so it is NEVER empty or blank) -->
-        <div id="weather-grid" class="grid grid-cols-5 gap-1 text-center divide-x divide-slate-100">
-          <!-- Day 1: 11/25 -->
-          <div class="flex flex-col items-center py-1 px-0.5">
-            <div class="text-xs font-extrabold text-slate-800">11/25</div>
-            <div class="text-[11px] text-slate-400 font-semibold">(三)</div>
-            <div class="text-[10px] text-[#1a6bc4] bg-blue-50/80 px-1.5 py-0.5 rounded font-bold mt-1 truncate max-w-full">岡山・高松</div>
-            <div class="text-2xl my-2 select-none">🌤️</div>
-            <div class="text-xs font-extrabold text-slate-800">9° <span class="text-slate-400 font-normal">16°</span></div>
-            <div class="text-[11px] font-semibold text-sky-600 mt-1 flex items-center gap-0.5">
-              <span>💧</span><span>15%</span>
-            </div>
-          </div>
-          <!-- Day 2: 11/26 -->
-          <div class="flex flex-col items-center py-1 px-0.5">
-            <div class="text-xs font-extrabold text-slate-800">11/26</div>
-            <div class="text-[11px] text-slate-400 font-semibold">(四)</div>
-            <div class="text-[10px] text-[#1a6bc4] bg-blue-50/80 px-1.5 py-0.5 rounded font-bold mt-1 truncate max-w-full">大步危・祖谷</div>
-            <div class="text-2xl my-2 select-none">⛅</div>
-            <div class="text-xs font-extrabold text-slate-800">6° <span class="text-slate-400 font-normal">14°</span></div>
-            <div class="text-[11px] font-semibold text-sky-600 mt-1 flex items-center gap-0.5">
-              <span>💧</span><span>20%</span>
-            </div>
-          </div>
-          <!-- Day 3: 11/27 -->
-          <div class="flex flex-col items-center py-1 px-0.5">
-            <div class="text-xs font-extrabold text-slate-800">11/27</div>
-            <div class="text-[11px] text-slate-400 font-semibold">(五)</div>
-            <div class="text-[10px] text-[#1a6bc4] bg-blue-50/80 px-1.5 py-0.5 rounded font-bold mt-1 truncate max-w-full">鳴門・淡路島</div>
-            <div class="text-2xl my-2 select-none">☀️</div>
-            <div class="text-xs font-extrabold text-slate-800">10° <span class="text-slate-400 font-normal">17°</span></div>
-            <div class="text-[11px] font-semibold text-sky-600 mt-1 flex items-center gap-0.5">
-              <span>💧</span><span>10%</span>
-            </div>
-          </div>
-          <!-- Day 4: 11/28 -->
-          <div class="flex flex-col items-center py-1 px-0.5">
-            <div class="text-xs font-extrabold text-slate-800">11/28</div>
-            <div class="text-[11px] text-slate-400 font-semibold">(六)</div>
-            <div class="text-[10px] text-[#1a6bc4] bg-blue-50/80 px-1.5 py-0.5 rounded font-bold mt-1 truncate max-w-full">姬路・神戶</div>
-            <div class="text-2xl my-2 select-none">🌤️</div>
-            <div class="text-xs font-extrabold text-slate-800">10° <span class="text-slate-400 font-normal">16°</span></div>
-            <div class="text-[11px] font-semibold text-sky-600 mt-1 flex items-center gap-0.5">
-              <span>💧</span><span>15%</span>
-            </div>
-          </div>
-          <!-- Day 5: 11/29 -->
-          <div class="flex flex-col items-center py-1 px-0.5">
-            <div class="text-xs font-extrabold text-slate-800">11/29</div>
-            <div class="text-[11px] text-slate-400 font-semibold">(日)</div>
-            <div class="text-[10px] text-[#1a6bc4] bg-blue-50/80 px-1.5 py-0.5 rounded font-bold mt-1 truncate max-w-full">吉備津・岡山</div>
-            <div class="text-2xl my-2 select-none">☀️</div>
-            <div class="text-xs font-extrabold text-slate-800">8° <span class="text-slate-400 font-normal">16°</span></div>
-            <div class="text-[11px] font-semibold text-sky-600 mt-1 flex items-center gap-0.5">
-              <span>💧</span><span>10%</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Clean Clothing Reminder Footer -->
-        <div class="mt-3.5 pt-2.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
-          <div class="flex items-center gap-1.5">
-            <span class="text-emerald-600">✅</span>
-            <span class="font-medium text-slate-600">即時預報 (Open-Meteo)，每次開啟自動更新</span>
-          </div>
-          <span class="text-[10px] text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full font-semibold">⛰️ 祖谷山區偏涼 6°~14°，建議洋蔥式穿搭</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. 🏨 嚴選住宿安排 -->
-    <section id="sec-hotels" class="px-5 scroll-mt-16">
-      <h2 class="text-[20px] font-extrabold text-[#164e87] flex items-center gap-2 mb-3.5">
-        <span>🏨</span> 嚴選住宿安排
-      </h2>
-
-      <div class="space-y-4">
-        <!-- Hotel 1: Route Inn Takamatsu Yashima -->
-        <div class="trip-card overflow-hidden">
-          <div class="h-40 w-full relative">
-            <img 
-              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80" 
-              alt="Route Inn 高松屋島" 
-              class="w-full h-full object-cover"
-              onerror="this.src='https://placehold.co/600x300/1a6bc4/ffffff?text=Route+Inn+Takamatsu'"
-            />
-            <span class="absolute top-3 left-3 bg-slate-900/75 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
-              【Day 1 - 2】香川高松・連住兩晚
-            </span>
-          </div>
-
-          <div class="p-4">
-            <div class="flex items-center justify-between mb-1.5">
-              <span class="text-xs font-bold text-[#1a6bc4] bg-blue-50 px-2.5 py-0.5 rounded-md">前兩晚</span>
-              <span class="text-xs font-semibold text-slate-500">📅 11/25 (三) – 11/27 (五)</span>
-            </div>
-
-            <h3 class="text-base font-extrabold text-slate-800">
-              Route Inn 高松屋島 (ホテルルートイン高松屋島)
-            </h3>
-            <p class="text-xs text-slate-500 mt-1">📍 香川県高松市春日町1653-2 ｜ 📞 087-841-6511</p>
-
-            <div class="flex flex-wrap items-center gap-2 mt-3">
-              <a href="https://www.google.com/maps/search/?api=1&query=ホテルルートイン高松屋島" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-[#1a6bc4] hover:bg-[#155a96] text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-sm transition">
-                📍 地圖
-              </a>
-              <button onclick="copyText('60 611 215*18', 'Route Inn 高松屋島 MapCode')" class="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-full transition">
-                🔢 MapCode: 60 611 215*18 📋
-              </button>
-            </div>
-
-            <!-- Expandable Drawer -->
-            <div class="mt-3 pt-2.5 border-t border-slate-100">
-              <button onclick="toggleHotelDetail('hotel-1-detail', 'hotel-1-arrow')" class="w-full flex items-center justify-between text-xs font-bold text-[#1a6bc4] py-1">
-                <span>🚗 飯店導航・電話與高松商店街停車備案</span>
-                <span id="hotel-1-arrow" class="transition-transform duration-200">▸</span>
-              </button>
-
-              <div id="hotel-1-detail" class="hidden mt-2.5 space-y-2 bg-slate-50 rounded-xl p-3 text-xs text-slate-600">
-                <div class="flex justify-between">
-                  <span class="font-bold text-slate-700">📞 導航電話：</span>
-                  <span class="font-mono font-semibold">087-841-6511</span>
-                </div>
-                <div>
-                  <span class="font-bold text-slate-700">🛍️ 夜間逛街備案：</span>
-                  高松中央商店街 (10:00-20:00)、Donki 唐吉訶德丸龜町店 (09:00-00:00)
-                </div>
-                <div class="bg-white p-2.5 rounded-lg border border-slate-200/80 space-y-1.5">
-                  <div class="font-bold text-slate-700">🅿️ 高松商店街周邊停車場 MapCode：</div>
-                  <div class="flex items-center justify-between">
-                    <span>• 丸龜町營第4駐車場 (P-4)</span>
-                    <button onclick="copyText('60 606 545*45', '丸龜町營第4駐車場 MapCode')" class="font-mono text-[#1a6bc4] font-bold underline">60 606 545*45 📋</button>
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <span>• 丸亀町壱番街駐車場</span>
-                    <button onclick="copyText('60 636 193*37', '丸亀町壱番街駐車場 MapCode')" class="font-mono text-[#1a6bc4] font-bold underline">60 636 193*37 📋</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Hotel 2: Hotel Sunroute Sopra Kobe -->
-        <div class="trip-card overflow-hidden">
-          <div class="h-40 w-full relative">
-            <img 
-              src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=800&q=80" 
-              alt="神戶燦路都雅致大飯店" 
-              class="w-full h-full object-cover"
-              onerror="this.src='https://placehold.co/600x300/0f766e/ffffff?text=Sunroute+Sopra+Kobe'"
-            />
-            <span class="absolute top-3 left-3 bg-slate-900/75 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
-              【Day 3 - 4】兵庫神戶・連住兩晚
-            </span>
-          </div>
-
-          <div class="p-4">
-            <div class="flex items-center justify-between mb-1.5">
-              <span class="text-xs font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-md">後兩晚</span>
-              <span class="text-xs font-semibold text-slate-500">📅 11/27 (五) – 11/29 (日)</span>
-            </div>
-
-            <h3 class="text-base font-extrabold text-slate-800">
-              神戶燦路都雅致大飯店 (ホテルサンルートソプラ神戸)
-            </h3>
-            <p class="text-xs text-slate-500 mt-1">📍 兵庫県神戸市中央区磯辺通1-1-22 ｜ 📞 078-222-7500</p>
-
-            <div class="flex flex-wrap items-center gap-2 mt-3">
-              <a href="https://www.google.com/maps/search/?api=1&query=ホテルサンルートソプラ神戸" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-[#1a6bc4] hover:bg-[#155a96] text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-sm transition">
-                📍 地圖
-              </a>
-              <button onclick="copyText('12 369 459*62', '神戶燦路都雅致大飯店 MapCode')" class="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-full transition">
-                🔢 MapCode: 12 369 459*62 📋
-              </button>
-            </div>
-
-            <!-- Expandable Drawer -->
-            <div class="mt-3 pt-2.5 border-t border-slate-100">
-              <button onclick="toggleHotelDetail('hotel-2-detail', 'hotel-2-arrow')" class="w-full flex items-center justify-between text-xs font-bold text-[#1a6bc4] py-1">
-                <span>🚗 飯店導航・電話與神戶三宮夜間行程</span>
-                <span id="hotel-2-arrow" class="transition-transform duration-200">▸</span>
-              </button>
-
-              <div id="hotel-2-detail" class="hidden mt-2.5 space-y-2 bg-slate-50 rounded-xl p-3 text-xs text-slate-600">
-                <div class="flex justify-between">
-                  <span class="font-bold text-slate-700">📞 導航電話：</span>
-                  <span class="font-mono font-semibold">078-222-7500</span>
-                </div>
-                <div>
-                  <span class="font-bold text-slate-700">🌃 夜間推薦：</span>
-                  三宮中心街購物、元町商店街、神戶港 (Mosaic / umie) 璀璨海港夜景
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. 🚗 五日環狀自駕路線圖（逆時針繞行瀨戶內海一圈） -->
-    <section id="sec-route" class="px-5 scroll-mt-16">
-      <h2 class="text-[20px] font-extrabold text-[#164e87] flex items-center gap-2 mb-3.5">
-        <span>🚗</span> 五日環狀自駕路線圖
-      </h2>
-
-      <div class="trip-card overflow-hidden">
-        <div class="bg-gradient-to-r from-[#164e87] to-[#1a6bc4] text-white p-4">
-          <div class="text-xs font-extrabold flex items-center gap-1.5 mb-1">
-            <span>🔄</span> 逆時針繞行瀨戶內海一圈・不走回頭路！
-          </div>
-          <p class="text-[11px] text-blue-100 leading-relaxed">
-            岡山機場(西北) ➔ 四國高松・大步危(西南) ➔ 鳴門・淡路島(東南) ➔ 神戶・姬路(東北) ➔ 吉備津彥神社・岡山返台
-          </p>
-        </div>
-
-        <div class="p-4 divide-y divide-slate-100 text-xs">
-          <div class="py-2.5 flex items-start justify-between gap-2">
-            <div>
-              <span class="font-extrabold text-[#1a6bc4]">Day 1｜11/25 (三)</span>
-              <span class="font-bold text-slate-800 ml-1">岡山機場 ➔ 与島PA ➔ 香川高松</span>
-              <p class="text-slate-500 text-[11px] mt-0.5">跨瀨戶大橋賞夕陽 (16:56日落)、高松美食口袋名單</p>
-            </div>
-            <span class="shrink-0 text-[10px] font-bold bg-blue-50 text-[#1a6bc4] px-2 py-0.5 rounded">宿：高松屋島</span>
-          </div>
-          <div class="py-2.5 flex items-start justify-between gap-2">
-            <div>
-              <span class="font-extrabold text-emerald-700">Day 2｜11/26 (四)</span>
-              <span class="font-bold text-slate-800 ml-1">高松 ➔ 大步危遊船 ➔ 祖谷藤蔓橋 ➔ 屋島夜景</span>
-              <p class="text-slate-500 text-[11px] mt-0.5">V字峽谷賞楓遊船、日本三大奇橋、屋島展望台百選夜景</p>
-            </div>
-            <span class="shrink-0 text-[10px] font-bold bg-blue-50 text-[#1a6bc4] px-2 py-0.5 rounded">宿：高松屋島</span>
-          </div>
-          <div class="py-2.5 flex items-start justify-between gap-2">
-            <div>
-              <span class="font-extrabold text-[#c85a28]">Day 3｜11/27 (五)</span>
-              <span class="font-bold text-slate-800 ml-1">高松 ➔ 鳴門漩渦◎ ➔ 幸福鬆餅 ➔ 花さじき ➔ 神戶</span>
-              <p class="text-slate-500 text-[11px] mt-0.5">雙重圈◎大潮汽船、淡路島由南往北不繞路、跨明石大橋</p>
-            </div>
-            <span class="shrink-0 text-[10px] font-bold bg-teal-50 text-teal-700 px-2 py-0.5 rounded">宿：神戶三宮</span>
-          </div>
-          <div class="py-2.5 flex items-start justify-between gap-2">
-            <div>
-              <span class="font-extrabold text-purple-700">Day 4｜11/28 (六)</span>
-              <span class="font-bold text-slate-800 ml-1">神戶 ➔ 國寶姬路城 ➔ 神戶牛 Ishida. ➔ 三田 Outlet</span>
-              <p class="text-slate-500 text-[11px] mt-0.5">09:00開城登天守閣、13:30預約A5神戶牛、關西最大Outlet</p>
-            </div>
-            <span class="shrink-0 text-[10px] font-bold bg-teal-50 text-teal-700 px-2 py-0.5 rounded">宿：神戶三宮</span>
-          </div>
-          <div class="pt-2.5 flex items-start justify-between gap-2">
-            <div>
-              <span class="font-extrabold text-teal-700">Day 5｜11/29 (日)</span>
-              <span class="font-bold text-slate-800 ml-1">神戶 ➔ 吉備津彥神社＆吉備津神社 ➔ 岡山機場返台</span>
-              <p class="text-slate-500 text-[11px] mt-0.5">桃太郎雙神社巡禮、ENEOS加油、13:10豐田租車還車接駁</p>
-            </div>
-            <span class="shrink-0 text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded">15:25 起飛</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. 📍 必訪景點 (Horizontal Snap Carousel) -->
-    <section id="sec-spots" class="scroll-mt-16">
-      <div class="px-5 flex items-center justify-between mb-3">
-        <h2 class="text-[20px] font-extrabold text-[#164e87] flex items-center gap-2">
-          <span>📍</span> 必訪景點
-        </h2>
-        <span class="text-xs text-slate-400 font-medium">左右滑動查看 ➔</span>
-      </div>
-
-      <div id="spots-carousel" class="snap-carousel no-scrollbar">
-        <!-- Populated by JS -->
-      </div>
-    </section>
-
-    <!-- 6. 🍜 美食推薦 (Horizontal Snap Carousel) -->
-    <section id="sec-food" class="scroll-mt-16">
-      <div class="px-5 flex items-center justify-between mb-3">
-        <h2 class="text-[20px] font-extrabold text-[#164e87] flex items-center gap-2">
-          <span>🍜</span> 美食推薦
-        </h2>
-        <span class="text-xs text-slate-400 font-medium">左右滑動查看 ➔</span>
-      </div>
-
-      <div id="food-carousel" class="snap-carousel no-scrollbar">
-        <!-- Populated by JS -->
-      </div>
-    </section>
-
-    <!-- 7. 📅 每日行程 (Collapsible Accordions + Vertical Timeline) -->
-    <section id="sec-itinerary" class="px-5 scroll-mt-16">
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-[20px] font-extrabold text-[#164e87] flex items-center gap-2">
-          <span>📅</span> 每日行程
-        </h2>
-        <button onclick="expandAllDays()" id="expand-all-btn" class="text-xs font-bold text-[#1a6bc4] hover:underline">
-          展開全部
-        </button>
-      </div>
-
-      <!-- 5 Day Accordion List -->
-      <div class="space-y-3" id="itinerary-accordions">
-
-        <!-- ================= DAY 1 ================= -->
-        <div id="day-card-1" class="trip-card overflow-hidden scroll-mt-16">
-          <button onclick="toggleDay(1)" class="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/70 transition">
-            <div class="flex items-center gap-2.5">
-              <span class="text-lg">🌉</span>
-              <div>
-                <div class="text-[15px] font-extrabold text-slate-800">Day 1 | 11/25 (三) 抵達岡山・与島PA</div>
-                <div class="text-[11px] text-slate-500 font-medium">岡山取車 ➔ 瀨戶大橋黃昏美景 ➔ 高松晚餐</div>
-              </div>
-            </div>
-            <span id="day-arrow-1" class="text-[#1a6bc4] font-bold text-sm transition-transform duration-200 rotate-90">▸</span>
-          </button>
-
-          <div id="day-body-1" class="px-4 pb-5 pt-1 border-t border-slate-100">
-            <div class="relative space-y-5">
-              <div class="timeline-line"></div>
-
-              <!-- Stop 1 -->
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">11:10</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#1a6bc4] ring-4 ring-blue-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">✈️ 桃園 ➔ 岡山機場 (IT214) ＆ 取車</div>
-                  <p class="text-xs text-slate-500 mt-0.5">14:35 抵達岡山桃太郎機場，出關辦理租車手續</p>
-                  <div class="mt-1.5 inline-flex items-center gap-1 bg-blue-50 text-[#1a6bc4] text-[11px] font-bold px-2.5 py-1 rounded-md">
-                    💳 必租「一般計次扣款 ETC 卡」享跨海大橋 46 折
-                  </div>
-                </div>
-              </div>
-
-              <!-- Drive pill -->
-              <div class="relative z-10 flex items-center pl-[58px]">
-                <span class="bg-slate-100 text-slate-600 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200">
-                  🚗 約 50–55 分鐘（自駕上瀨戶中央自動車道）
-                </span>
-              </div>
-
-              <!-- Stop 2 -->
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">15:30</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#ef6c33] ring-4 ring-orange-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-[#c85a28]">🌉 与島PA 休息站：看瀨戶大橋、吃小點</div>
-                  <p class="text-xs text-slate-600 mt-0.5">停留約 1 小時。登上展望台賞跨海大橋壯麗黃昏（🌅 11/25 日落 16:56）。美食街與伴手禮營業至 21:00（義式冰淇淋至 18:00）。</p>
-                  <button onclick="copyText('391 758 817*58', '与島PA MapCode')" class="mt-1.5 inline-flex items-center gap-1 bg-orange-50 text-[#c85a28] text-[11px] font-bold px-2.5 py-0.5 rounded border border-orange-200">
-                    🔢 MapCode: 391 758 817*58 📋
-                  </button>
-                </div>
-              </div>
-
-              <!-- Drive pill -->
-              <div class="relative z-10 flex items-center pl-[58px]">
-                <span class="bg-slate-100 text-slate-600 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200">
-                  🚗 約 50 分鐘（下橋前往香川高松）
-                </span>
-              </div>
-
-              <!-- Stop 3 -->
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">18:00</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-teal-600 ring-4 ring-teal-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🏨 Route Inn 高松屋島 Check-in</div>
-                  <p class="text-xs text-slate-500 mt-0.5">順遊備案：高松中央商店街 (10-20)、Donki 丸龜町店 (09-00)</p>
-                  <button onclick="copyText('60 611 215*18', 'Route Inn 高松屋島 MapCode')" class="mt-1 inline-flex items-center gap-1 bg-slate-100 text-slate-700 text-[11px] font-bold px-2.5 py-0.5 rounded">
-                    🔢 MapCode: 60 611 215*18 📋
-                  </button>
-                </div>
-              </div>
-
-              <!-- Stop 4 -->
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">19:00</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#ef6c33] ring-4 ring-orange-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-[#c85a28]">🍗 高松市區晚餐口袋名單</div>
-                  <div class="mt-1.5 grid grid-cols-1 gap-1 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
-                    <div>• <strong>串燒酒場 若八屋</strong> (17:00-24:00) 人氣串燒居酒屋</div>
-                    <div>• <strong>骨付鳥 一鶴 高松店</strong> (17:00-23:00) 香川必吃烤雞腿</div>
-                    <div>• <strong>手打烏龍麵 鶴丸</strong> (20:00-02:00) 深夜咖哩烏龍麵</div>
-                    <div>• <strong>德島拉麵 麵王</strong> (11-24) / <strong>Kineya</strong> (11-21) / <strong>ito</strong> (18-23)</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ================= DAY 2 ================= -->
-        <div id="day-card-2" class="trip-card overflow-hidden scroll-mt-16">
-          <button onclick="toggleDay(2)" class="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/70 transition">
-            <div class="flex items-center gap-2.5">
-              <span class="text-lg">🍁</span>
-              <div>
-                <div class="text-[15px] font-extrabold text-slate-800">Day 2 | 11/26 (四) 大步危・祖谷秘境</div>
-                <div class="text-[11px] text-slate-500 font-medium">大步危峽谷遊船 ➔ 祖谷藤蔓橋 ➔ 屋島展望台夜景</div>
-              </div>
-            </div>
-            <span id="day-arrow-2" class="text-[#1a6bc4] font-bold text-sm transition-transform duration-200">▸</span>
-          </button>
-
-          <div id="day-body-2" class="hidden px-4 pb-5 pt-1 border-t border-slate-100">
-            <div class="relative space-y-5">
-              <div class="timeline-line"></div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">09:00</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#1a6bc4] ring-4 ring-blue-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🚙 Route Inn 高松屋島出發</div>
-                  <p class="text-xs text-slate-500 mt-0.5">自駕南下前往德島縣三好市秘境</p>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-center pl-[58px]">
-                <span class="bg-slate-100 text-slate-600 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200">
-                  🚗 約 1 小時 40 分鐘
-                </span>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">11:00</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🛶 大步危峽谷觀光遊覽船 ＋ Mannaka 午餐</div>
-                  <p class="text-xs text-slate-600 mt-0.5">停留約 2 小時。遊覽船 (09:00-16:30，航程30分) 賞 V 字峽谷與楓紅；同棟「レストラン大歩危峡まんなか」(09:00-17:00) 享用鄉土料理午餐。</p>
-                  <button onclick="copyText('357 151 826*61', '大步危遊覽船 MapCode')" class="mt-1.5 inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded border border-emerald-200">
-                    🔢 MapCode: 357 151 826*61 (免費停車場) 📋
-                  </button>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-center pl-[58px]">
-                <span class="bg-slate-100 text-slate-600 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200">
-                  🚗 山路約 30 分鐘
-                </span>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">13:30</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🌿 祖谷藤蔓橋（かずら橋 遊山玩水）</div>
-                  <p class="text-xs text-slate-600 mt-0.5">停留約 1.5 小時。走過日本三大奇橋野生獼猴桃藤蔓吊橋、欣賞琵琶瀑布與溪谷楓紅。</p>
-                  <button onclick="copyText('357 130 456*17', '祖谷藤蔓橋 MapCode')" class="mt-1.5 inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded border border-emerald-200">
-                    🔢 MapCode: 357 130 456*17 (夢舞台停車 500円) 📋
-                  </button>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-center pl-[58px]">
-                <span class="bg-slate-100 text-slate-600 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200">
-                  🚗 約 1 小時 45 分～2 小時（返回高松）
-                </span>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">17:00</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#ef6c33] ring-4 ring-orange-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-[#c85a28]">🌃 屋島展望台百選夜景 ＆ 高松晚餐</div>
-                  <p class="text-xs text-slate-600 mt-0.5">🌅 日落約 16:55，俯瞰瀨戶內海與高松市區百選夜景（山上收費停車場 300円），隨後回高松市區晚餐，續住 Route Inn 高松屋島。</p>
-                  <button onclick="copyText('60 672 588*14', '屋島展望台 MapCode')" class="mt-1.5 inline-flex items-center gap-1 bg-orange-50 text-[#c85a28] text-[11px] font-bold px-2.5 py-0.5 rounded border border-orange-200">
-                    🔢 MapCode: 60 672 588*14 📋
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ================= DAY 3 ================= -->
-        <div id="day-card-3" class="trip-card overflow-hidden scroll-mt-16">
-          <button onclick="toggleDay(3)" class="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/70 transition">
-            <div class="flex items-center gap-2.5">
-              <span class="text-lg">🌊</span>
-              <div>
-                <div class="text-[15px] font-extrabold text-slate-800">Day 3 | 11/27 (五) 鳴門漩渦・淡路島・神戶</div>
-                <div class="text-[11px] text-slate-500 font-medium">雙重圈◎大潮漩渦 ➔ 幸福鬆餅 ➔ 淡路花海 ➔ 神戶</div>
-              </div>
-            </div>
-            <span id="day-arrow-3" class="text-[#1a6bc4] font-bold text-sm transition-transform duration-200">▸</span>
-          </button>
-
-          <div id="day-body-3" class="hidden px-4 pb-5 pt-2 border-t border-slate-100">
-            <!-- Plan A / Plan B Interactive Switcher -->
-            <div class="bg-slate-100 p-1 rounded-xl flex gap-1 mb-4">
-              <button id="btn-plan-a" onclick="switchDay3Plan('A')" class="flex-1 py-2 px-2 rounded-lg text-xs font-extrabold bg-[#1a6bc4] text-white shadow-sm transition">
-                🌟 首推方案A：早班◎09:00 (免排隊)
-              </button>
-              <button id="btn-plan-b" onclick="switchDay3Plan('B')" class="flex-1 py-2 px-2 rounded-lg text-xs font-extrabold text-slate-600 hover:bg-white/60 transition">
-                😴 方案B：睡飽搭◎12:30 大潮
-              </button>
-            </div>
-
-            <!-- Plan A Content -->
-            <div id="day3-plan-a" class="relative space-y-5">
-              <div class="timeline-line"></div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">07:20</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#1a6bc4] ring-4 ring-blue-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🚙 高松退房出發 ➔ 鳴門龜浦港</div>
-                  <p class="text-xs text-slate-500 mt-0.5">車程約 70 分鐘（08:30 抵達買票登船）</p>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">09:00</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#1a6bc4] ring-4 ring-blue-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-[#164e87]">🌊 鳴門漩渦 うずしお汽船（09:00 雙重圈◎大潮）</div>
-                  <p class="text-xs text-slate-600 mt-0.5">航程 30 分鐘（09:00-09:30），直擊早上最大潮流漩渦！</p>
-                  <button onclick="copyText('406 211 595*12', '鳴門漩渦汽船 MapCode')" class="mt-1.5 inline-flex items-center gap-1 bg-blue-50 text-[#1a6bc4] text-[11px] font-bold px-2.5 py-0.5 rounded border border-blue-200">
-                    🔢 MapCode: 406 211 595*12 (免費停車) 📋
-                  </button>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-center pl-[58px]">
-                <span class="bg-slate-100 text-slate-600 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200">
-                  🚗 過大鳴門橋 51km（約 55 分鐘，一路向北不繞路）
-                </span>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">10:35</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#ef6c33] ring-4 ring-orange-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-[#c85a28]">🥞 幸福鬆餅 淡路島度假村本店</div>
-                  <p class="text-xs text-slate-600 mt-0.5">10:35–13:15 剛開門抵達完全免排隊！悠閒享用鬆餅、拍幸福階梯與海景鞦韆。</p>
-                  <button onclick="copyText('339 044 141*18', '幸福鬆餅淡路島 MapCode')" class="mt-1.5 inline-flex items-center gap-1 bg-orange-50 text-[#c85a28] text-[11px] font-bold px-2.5 py-0.5 rounded border border-orange-200">
-                    🔢 MapCode: 339 044 141*18 (免費停車) 📋
-                  </button>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-center pl-[58px]">
-                <span class="bg-slate-100 text-slate-600 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200">
-                  🚗 繼續北上 18km（約 30 分鐘）
-                </span>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">13:45</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🌸 兵庫縣立公園 あわじ花さじき</div>
-                  <p class="text-xs text-slate-600 mt-0.5">13:45–15:15 欣賞 11 月底紫羅蘭與金魚草花海，遠眺明石海峽（停車 200円）。</p>
-                  <button onclick="copyText('339 207 106*63', 'あわじ花さじき MapCode')" class="mt-1.5 inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded border border-emerald-200">
-                    🔢 MapCode: 339 207 106*63 📋
-                  </button>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-center pl-[58px]">
-                <span class="bg-slate-100 text-slate-600 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200">
-                  🚗 過明石海峽大橋（約 55 分鐘）
-                </span>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">16:15</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-teal-600 ring-4 ring-teal-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🏨 神戶燦路都雅致大飯店 Check-in ＆ 夜景</div>
-                  <p class="text-xs text-slate-600 mt-0.5">晚上逛三宮中心街、元町或神戶港 (umie) 賞夜景。</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Plan B Content (Hidden by default) -->
-            <div id="day3-plan-b" class="hidden relative space-y-5">
-              <div class="timeline-line"></div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">09:30</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#1a6bc4] ring-4 ring-blue-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🚙 高松睡飽退房 ➔ 10:45 鳴門公園＆早午餐</div>
-                  <p class="text-xs text-slate-500 mt-0.5">先逛鳴門公園展望台與享用早午餐</p>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">12:30</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#1a6bc4] ring-4 ring-blue-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-[#164e87]">🌊 搭乘うずしお汽船（12:30 下午首班◎大潮）</div>
-                  <p class="text-xs text-slate-600 mt-0.5">12:30–13:00 航程 30 分鐘觀賞大潮漩渦</p>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">14:05</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#ef6c33] ring-4 ring-orange-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-[#c85a28]">🥞 幸福鬆餅 淡路島本店</div>
-                  <p class="text-xs text-slate-600 mt-0.5">13:10–14:05 開車北上，14:05–15:35 享用下午茶鬆餅</p>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">16:05</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🌸 あわじ花さじき (16:05–17:00)</div>
-                  <p class="text-xs text-amber-700 font-semibold mt-0.5">⚠️ 注意：園區 16:30 最後入園，務必準時抵達！</p>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">18:00</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-teal-600 ring-4 ring-teal-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🏨 抵達神戶燦路都雅致大飯店 Check-in</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Yellow Note Box (Matches Video style) -->
-            <div class="mt-4 bg-amber-50 border border-amber-200/90 rounded-xl p-3 text-xs text-amber-900">
-              💡 <strong>不繞路秘訣：</strong>鳴門港 ➔(51km)➔ 幸福鬆餅 ➔(18km)➔ 花さじき ➔ 神戶，由南往北一條線順行，比先去花さじき折返<strong>現省 40 分鐘車程</strong>！
-            </div>
-          </div>
-        </div>
-
-        <!-- ================= DAY 4 ================= -->
-        <div id="day-card-4" class="trip-card overflow-hidden scroll-mt-16">
-          <button onclick="toggleDay(4)" class="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/70 transition">
-            <div class="flex items-center gap-2.5">
-              <span class="text-lg">🏯</span>
-              <div>
-                <div class="text-[15px] font-extrabold text-slate-800">Day 4 | 11/28 (六) 姬路城・神戶牛・Outlet</div>
-                <div class="text-[11px] text-slate-500 font-medium">國寶姬路城 ➔ 13:30 預約神戶牛 Ishida. ➔ 三田 Outlet</div>
-              </div>
-            </div>
-            <span id="day-arrow-4" class="text-[#1a6bc4] font-bold text-sm transition-transform duration-200">▸</span>
-          </button>
-
-          <div id="day-body-4" class="hidden px-4 pb-5 pt-1 border-t border-slate-100">
-            <div class="relative space-y-5">
-              <div class="timeline-line"></div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">07:45</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#1a6bc4] ring-4 ring-blue-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🚙 神戶出發 ➔ 08:45 停妥姬路城大手門駐車場</div>
-                  <p class="text-xs text-slate-600 mt-0.5">週六紅葉季大手門駐車場常於 09:00 滿車，務必 08:45 前進場！（備用：北側姬山駐車場 <span class="font-mono font-bold">24 308 178*06</span>）</p>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">09:00</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🏯 世界遺產・國寶姬路城（開城即入園）</div>
-                  <p class="text-xs text-slate-600 mt-0.5">09:00–11:15 優先登大天守閣免排隊（入內需脫鞋，請穿好穿脫鞋襪）。</p>
-                  <button onclick="copyText('24 308 004*56', '姬路城大手門駐車場 MapCode')" class="mt-1.5 inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded border border-emerald-200">
-                    🔢 MapCode: 24 308 004*56 📋
-                  </button>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-center pl-[58px]">
-                <span class="bg-amber-50 text-amber-800 text-[11px] font-bold px-3 py-1 rounded-full border border-amber-200">
-                  🚗 11:15 準時離開！預留 90 分鐘防週六阪神高速塞車
-                </span>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">13:30</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#ef6c33] ring-4 ring-orange-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-[#c85a28]">🥩【已預約】神戶牛排 Ishida. 生田新道店</div>
-                  <p class="text-xs text-slate-600 mt-0.5">13:30–15:15 鐵板燒午餐。地址：<strong>下山手通 2-1-14 Arc Coast 大樓 2F</strong>（⚠️ 300m內另有本店、三宮店、北野坂店，切勿跑錯！）。</p>
-                  <div class="mt-1.5 flex flex-wrap gap-1.5">
-                    <button onclick="copyText('12 368 693*45', 'COIN PARK 生田新道 MapCode')" class="bg-orange-50 text-[#c85a28] text-[11px] font-bold px-2 py-0.5 rounded border border-orange-200">
-                      🅿️ 停車1: 12 368 693*45 📋
-                    </button>
-                    <button onclick="copyText('12 368 752*76', 'システムパーク下山手通2丁目 MapCode')" class="bg-slate-100 text-slate-700 text-[11px] font-bold px-2 py-0.5 rounded">
-                      🅿️ 停車2: 12 368 752*76 📋
-                    </button>
-                    <button onclick="copyText('12 367 779*12', 'タイムズ下山手通２丁目 MapCode')" class="bg-slate-100 text-slate-700 text-[11px] font-bold px-2 py-0.5 rounded">
-                      🅿️ 停車3: 12 367 779*12 📋
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-center pl-[58px]">
-                <span class="bg-slate-100 text-slate-600 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200">
-                  🚗 約 35–40 分鐘（北上神戶三田）
-                </span>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">16:00</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-purple-600 ring-4 ring-purple-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🛍️ 神戶三田 Premium Outlets ＆ AEON Mall</div>
-                  <p class="text-xs text-slate-600 mt-0.5">逛至 20:00 閉館，連通旁邊 AEON Mall 吃晚餐超方便（推薦停免費 P3 立體停車場）。</p>
-                  <button onclick="copyText('155 068 454*73', '神戶三田 Outlet P3 MapCode')" class="mt-1.5 inline-flex items-center gap-1 bg-purple-50 text-purple-800 text-[11px] font-bold px-2.5 py-0.5 rounded border border-purple-200">
-                    🔢 MapCode: 155 068 454*73 📋
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ================= DAY 5 ================= -->
-        <div id="day-card-5" class="trip-card overflow-hidden scroll-mt-16">
-          <button onclick="toggleDay(5)" class="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/70 transition">
-            <div class="flex items-center gap-2.5">
-              <span class="text-lg">⛩️</span>
-              <div>
-                <div class="text-[15px] font-extrabold text-slate-800">Day 5 | 11/29 (日) 吉備津雙神社・返台</div>
-                <div class="text-[11px] text-slate-500 font-medium">吉備津彥神社・吉備津神社 ➔ 加油還車 ➔ 15:25 起飛</div>
-              </div>
-            </div>
-            <span id="day-arrow-5" class="text-[#1a6bc4] font-bold text-sm transition-transform duration-200">▸</span>
-          </button>
-
-          <div id="day-body-5" class="hidden px-4 pb-5 pt-1 border-t border-slate-100">
-            <div class="relative space-y-5">
-              <div class="timeline-line"></div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">08:30</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#1a6bc4] ring-4 ring-blue-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🚙 神戶飯店退房 ➔ 山陽自動車道西行</div>
-                  <p class="text-xs text-slate-600 mt-0.5">車程約 152km (1小時55分)。使用 ETC 卡直接從<strong>「吉備スマートIC」</strong>（或岡山IC）下交流道，3km 即達神社，比去倉敷省 25km 不繞路！</p>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">10:30</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">🍑 吉備津彥神社 ＆ 吉備津神社 參拜＋早午餐</div>
-                  <div class="mt-1.5 space-y-2 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <div>
-                      <strong class="text-slate-800">① 備前國一宮・吉備津彥神社</strong>（免費停車100台）：「朝日の宮」，桃太郎原型古社，必看日本最大石燈籠、千年平安杉、白桃御守與桃子水占卜。
-                      <button onclick="copyText('275 013 898*17', '吉備津彥神社 MapCode')" class="block mt-1 font-mono text-[#1a6bc4] font-bold">🔢 MapCode: 275 013 898*17 📋</button>
-                    </div>
-                    <div class="pt-1.5 border-t border-slate-200/70">
-                      <strong class="text-slate-800">② 備中國・吉備津神社</strong>（車程5分）：日本唯一國寶「吉備津造」雙屋頂本殿、必拍 360 公尺木造大迴廊與鳴釜神事「御釜殿」！
-                      <button onclick="copyText('275 012 191*36', '吉備津神社 MapCode')" class="block mt-1 font-mono text-[#1a6bc4] font-bold">🔢 MapCode: 275 012 191*36 📋</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">12:15</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-[#ef6c33] ring-4 ring-orange-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-[#c85a28]">⛽ 神社出發 ➔ 機場旁加油 ➔ 13:10 豐田租車歸還</div>
-                  <p class="text-xs text-slate-600 mt-0.5">走縣道72號北上僅 16km（約 30 分鐘）。先至 <strong>ENEOS Dr.Driveセルフ岡山一宮店</strong>加滿 Regular 紅色油槍並索取收據，13:10 抵達<strong>岡山機場前 租車歸還區（豐田租車岡山 岡山機場店）</strong>驗車接駁（還車專用，勿輸航廈電話）。</p>
-                  <div class="mt-1.5 flex flex-wrap gap-1.5">
-                    <button onclick="copyText('275 075 466*63', 'ENEOS 岡山一宮店 MapCode')" class="bg-orange-50 text-[#c85a28] text-[11px] font-bold px-2 py-0.5 rounded border border-orange-200">
-                      ⛽ 加油站: 275 075 466*63 📋
-                    </button>
-                    <button onclick="copyText('275 312 789*45', '豐田租車岡山機場店 MapCode')" class="bg-blue-50 text-[#1a6bc4] text-[11px] font-bold px-2 py-0.5 rounded border border-blue-200">
-                      🚗 豐田還車: 275 312 789*45 📋
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="relative z-10 flex items-start gap-3">
-                <div class="w-[56px] text-right font-mono font-bold text-xs text-slate-600 pt-1 shrink-0">13:15</div>
-                <div class="w-3.5 h-3.5 rounded-full bg-teal-600 ring-4 ring-teal-100 mt-1 shrink-0"></div>
-                <div class="flex-1">
-                  <div class="font-extrabold text-sm text-slate-800">✈️ 抵達岡山機場報到（14:40 關櫃 ➔ 15:25 起飛）</div>
-                  <p class="text-xs text-slate-500 mt-0.5">搭乘 IT215 返台，17:35 平安抵達桃園機場！</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- 7. 🔢 全行程 MapCode 導航速查總表 -->
-    <section id="sec-mapcode" class="px-5 scroll-mt-16">
-      <h2 class="text-[20px] font-extrabold text-[#164e87] flex items-center gap-2 mb-2">
-        <span>🔢</span> 車機導航 MapCode 速查表
-      </h2>
-      <p class="text-xs text-slate-500 mb-3">
-        點擊任一 MapCode 即可一鍵複製，上車輸入日本導航最精準！
-      </p>
-
-      <!-- Day Filter Pills & Search -->
-      <div class="trip-card p-4">
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2.5">
-          <button onclick="filterMapCodes('ALL', this)" class="mc-filter-btn bg-[#1a6bc4] text-white text-xs font-bold px-3 py-1.5 rounded-full shrink-0">全部 (21)</button>
-          <button onclick="filterMapCodes('D1', this)" class="mc-filter-btn bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-full shrink-0">Day 1</button>
-          <button onclick="filterMapCodes('D2', this)" class="mc-filter-btn bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-full shrink-0">Day 2</button>
-          <button onclick="filterMapCodes('D3', this)" class="mc-filter-btn bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-full shrink-0">Day 3</button>
-          <button onclick="filterMapCodes('D4', this)" class="mc-filter-btn bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-full shrink-0">Day 4</button>
-          <button onclick="filterMapCodes('D5', this)" class="mc-filter-btn bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-full shrink-0">Day 5</button>
-        </div>
-
-        <div class="relative mb-3">
-          <input 
-            id="mc-search" 
-            type="text" 
-            oninput="renderMapCodes()" 
-            placeholder="🔍 搜尋景點、停車場、飯店或餐廳..." 
-            class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#1a6bc4]"
-          />
-        </div>
-
-        <div id="mapcode-list" class="divide-y divide-slate-100 max-h-[420px] overflow-y-auto pr-1">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-    </section>
-
-    <!-- 8. 💼 旅遊小提醒 (Matches bottom drawer in video) -->
-    <section id="sec-tips" class="px-5 scroll-mt-16">
-      <h2 class="text-[20px] font-extrabold text-[#164e87] flex items-center gap-2 mb-3.5">
-        <span>💼</span> 旅遊小提醒
-      </h2>
-
-      <!-- Main Collapsible Reminder Card matching video -->
-      <div class="trip-card overflow-hidden">
-        <button onclick="toggleTipsDrawer()" class="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50 transition">
-          <span class="text-sm font-extrabold text-slate-800">
-            點開查看：四大自駕關鍵攻略・ETC省錢・行前檢查表
-          </span>
-          <span id="tips-arrow" class="text-[#1a6bc4] font-bold text-sm transition-transform duration-200 rotate-90">▸</span>
-        </button>
-
-        <div id="tips-drawer-body" class="px-4 pb-5 pt-2 border-t border-slate-100 space-y-4">
-          <!-- 4 Key Highlights from Slide 10 -->
-          <div class="space-y-2.5">
-            <div class="bg-blue-50/70 border border-blue-200/80 rounded-xl p-3 text-xs">
-              <div class="font-extrabold text-[#164e87] mb-1">🌊 1. 11/27 (五) うずしお汽船雙重圈◎不繞路</div>
-              <p class="text-slate-600 leading-relaxed">
-                首推搭早班 <strong>09:00（雙重圈◎大潮）</strong>，下船北上 10:35 抵幸福鬆餅免排隊，再去あわじ花さじき；若想睡飽則搭 <strong>12:30（下午首班◎大潮）</strong>。由南往北不走回頭路現省 40 分鐘！
-              </p>
-            </div>
-
-            <div class="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3 text-xs">
-              <div class="font-extrabold text-emerald-900 mb-1">💳 2. 租「一般 ETC 卡」省 54%（現省 3,930 日圓）</div>
-              <p class="text-slate-600 leading-relaxed">
-                本行程為跨區大環線，不需買 SEP 吃到飽，請務必向租車公司借<strong>「一般計次扣款 ETC 卡」</strong>！瀨戶大橋、大鳴門橋、明石海峽大橋通行費直接打 46 折，Day 5 還可直接下「吉備 Smart IC」！
-              </p>
-            </div>
-
-            <div class="bg-orange-50/70 border border-orange-200/80 rounded-xl p-3 text-xs">
-              <div class="font-extrabold text-[#c85a28] mb-1">🥩 3. 11/28 (六) 姬路停車與 13:30 神戶牛防遲到</div>
-              <p class="text-slate-600 leading-relaxed">
-                週六姬路城大手門駐車場極易滿車，請於 <strong>08:45 前停妥</strong>；11:15 準時開車回神戶三宮，確保準時抵達 <strong>13:30「Ishida. 生田新道店」</strong>（Arc Coast 大樓 2F，勿跑錯分店）。
-              </p>
-            </div>
-
-            <div class="bg-purple-50/70 border border-purple-200/80 rounded-xl p-3 text-xs">
-              <div class="font-extrabold text-purple-900 mb-1">⛩️ 4. 11/29 (日) 吉備津彥神社 30 分鐘直達機場還車</div>
-              <p class="text-slate-600 leading-relaxed">
-                12:15 離開神社走縣道 72 號北上 30 分鐘即達機場旁 <strong>ENEOS 岡山一宮店</strong>加滿油（Regular 紅槍），13:10 抵<strong>豐田租車岡山 岡山機場店（MapCode: 275 312 789*45）</strong>驗車接駁，13:15 抵達航廈完美銜接 14:40 關櫃 / 15:25 起飛返台！
-              </p>
-            </div>
-          </div>
-
-          <!-- Interactive Checklist saved to localStorage -->
-          <div class="pt-2 border-t border-slate-200/70">
-            <div class="flex items-center justify-between mb-2">
-              <h3 class="text-xs font-extrabold text-slate-800">✅ 自駕與隨身必備檢查清單 (自動儲存)</h3>
-              <button onclick="resetChecklist()" class="text-[11px] text-slate-400 hover:text-slate-600">重置</button>
-            </div>
-            <div id="checklist-container" class="space-y-2">
-              <!-- Populated by JS -->
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Footer -->
-  <footer class="mt-10 px-5 text-center text-xs text-slate-400 space-y-1">
-    <p class="font-semibold text-slate-500">2026 日本岡山・四國・淡路島・神戶 5天4夜自駕遊</p>
-    <p>Created from 2026岡山四國最終定案版 PPTX</p>
-  </footer>
-
-  <!-- Toast Notification for Copy MapCode -->
-  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 flex items-center gap-2">
-    <span>✅</span>
-    <span id="toast-msg">已複製 MapCode！</span>
   </div>
+</header>
 
+<nav class="sticky top-0 z-40 border-b border-slate-200 py-2.5" style="background:rgba(242,246,250,.95);backdrop-filter:blur(8px)">
+  <div id="nav" class="flex gap-2 overflow-x-auto noscroll px-4"></div>
+</nav>
+
+<main class="space-y-8 mt-4">
+
+<section id="sec-flights" class="px-5 sec">
+  <h2 class="text-xl font-extrabold mb-3" style="color:var(--navy)">✈️ 航班資訊</h2>
+  <div class="space-y-4">
+    <div class="card p-5">
+      <div class="flex justify-between mb-2"><span class="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md">✈️ 去程航班</span><span class="text-xs font-semibold text-slate-500">2026/11/25 (三)</span></div>
+      <div class="font-extrabold">IT214 台灣虎航</div>
+      <div class="text-xs text-slate-500">桃園機場 (TPE) ➔ 岡山桃太郎機場 (OKJ)</div>
+      <div class="flex items-center gap-3 my-3"><span class="text-2xl font-extrabold" style="color:var(--navy)">11:10</span><span class="text-xs text-slate-400">飛行 2h25m ➔</span><span class="text-2xl font-extrabold" style="color:var(--navy)">14:35</span></div>
+      <div class="bg-[#f0f7ff] border-l-4 border-[#1a6bc4] rounded-r-xl p-3 text-xs space-y-1.5">
+        <div class="font-bold" style="color:var(--navy)">🕒 09:10 前抵達桃園機場（起飛前 2 小時）</div>
+        <p class="text-slate-600 leading-relaxed">💡 <b>出關取車必辦：</b>請向租車公司租借<b>「一般計次扣款 ETC 卡」</b>（不買 SEP 吃到飽），三大跨海大橋享 <b>46 折現省 3,930 日圓</b>，Day 5 還可直接下吉備 Smart IC！</p>
+      </div>
+    </div>
+    <div class="card p-5">
+      <div class="flex justify-between mb-2"><span class="text-xs font-bold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-md">🛫 回程航班</span><span class="text-xs font-semibold text-slate-500">2026/11/29 (日)</span></div>
+      <div class="font-extrabold">IT215 台灣虎航</div>
+      <div class="text-xs text-slate-500">岡山桃太郎機場 (OKJ) ➔ 桃園機場 (TPE)</div>
+      <div class="flex items-center gap-3 my-3"><span class="text-2xl font-extrabold text-teal-800">15:25</span><span class="text-xs text-slate-400">飛行 3h10m ➔</span><span class="text-2xl font-extrabold text-teal-800">17:35</span></div>
+      <div class="bg-[#f2fbf9] border-l-4 border-teal-600 rounded-r-xl p-3 text-xs space-y-1.5">
+        <div class="font-bold text-teal-900">🧳 建議抵達時間：13:15 抵達岡山機場最充裕</div>
+        <p class="text-slate-600 leading-relaxed">🚨 <b>14:40 準時關櫃（起飛前45分鐘）！</b>12:15 從吉備津神社出發 ➔ 機場旁 ENEOS 加滿油（Regular 紅槍）➔ 13:10 豐田租車岡山機場店還車接駁最從容。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sec-weather" class="px-5 sec">
+  <div class="flex justify-between items-center mb-3">
+    <h2 class="text-xl font-extrabold" style="color:var(--navy)">🌤️ 五日天氣預報</h2>
+    <span class="text-xs font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-full">11/25 - 11/29</span>
+  </div>
+  <div class="card p-3">
+    <div id="wx" class="grid grid-cols-5 text-center divide-x divide-slate-100"></div>
+    <div class="mt-3 pt-2 border-t border-slate-100 text-[11px] text-slate-500 flex flex-wrap justify-between gap-2">
+      <span id="wx-note">預設參考值（連線後自動更新為 Open-Meteo 即時預報）</span>
+      <span class="text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full font-semibold">⛰️ 祖谷山區偏涼，建議洋蔥式穿搭</span>
+    </div>
+  </div>
+</section>
+
+<section id="sec-hotels" class="px-5 sec">
+  <h2 class="text-xl font-extrabold mb-3" style="color:var(--navy)">🏨 嚴選住宿安排</h2>
+  <div id="hotels" class="space-y-4"></div>
+</section>
+
+<section id="sec-route" class="px-5 sec">
+  <h2 class="text-xl font-extrabold mb-3" style="color:var(--navy)">🚗 五日環狀自駕路線圖</h2>
+  <div class="card overflow-hidden">
+    <div class="text-white p-4" style="background:linear-gradient(90deg,#164e87,#1a6bc4)">
+      <div class="text-xs font-extrabold mb-1">🔄 逆時針繞行瀨戶內海一圈・不走回頭路！</div>
+      <p class="text-[11px] text-blue-100 leading-relaxed">岡山機場(西北) ➔ 四國高松・大步危(西南) ➔ 鳴門・淡路島(東南) ➔ 神戶・姬路(東北) ➔ 吉備津彥神社・岡山返台</p>
+    </div>
+    <div id="route" class="p-4 divide-y divide-slate-100 text-xs"></div>
+  </div>
+</section>
+
+<section id="sec-itinerary" class="px-5 sec">
+  <div class="flex justify-between items-center mb-3">
+    <h2 class="text-xl font-extrabold" style="color:var(--navy)">📅 每日行程</h2>
+    <button id="expbtn" onclick="toggleAll()" class="text-xs font-bold text-blue-700 bg-blue-50 px-3 py-1.5 rounded-full">全部展開</button>
+  </div>
+  <div id="days" class="space-y-3"></div>
+</section>
+
+<section id="sec-spots" class="sec">
+  <div class="px-5 flex justify-between items-center mb-3"><h2 class="text-xl font-extrabold" style="color:var(--navy)">📍 必訪景點</h2><span class="text-xs text-slate-400">左右滑動 ➔</span></div>
+  <div id="spots" class="snap noscroll"></div>
+</section>
+
+<section id="sec-food" class="sec">
+  <div class="px-5 flex justify-between items-center mb-3"><h2 class="text-xl font-extrabold" style="color:var(--navy)">🍜 美食推薦</h2><span class="text-xs text-slate-400">左右滑動 ➔</span></div>
+  <div id="food" class="snap noscroll"></div>
+</section>
+
+<section id="sec-mapcode" class="px-5 sec">
+  <h2 class="text-xl font-extrabold mb-1" style="color:var(--navy)">🔢 車機導航 MapCode 速查表</h2>
+  <p class="text-xs text-slate-500 mb-3">點擊任一列即可一鍵複製</p>
+  <div class="card p-4">
+    <div id="mcf" class="flex gap-1.5 overflow-x-auto noscroll pb-2.5"></div>
+    <input id="mcs" type="text" oninput="renderMC()" placeholder="🔍 搜尋景點、停車場、飯店或餐廳..." class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 mb-3 outline-none" />
+    <div id="mcl" class="divide-y divide-slate-100 overflow-y-auto" style="max-height:420px"></div>
+  </div>
+</section>
+
+<section id="sec-tips" class="px-5 sec">
+  <h2 class="text-xl font-extrabold mb-3" style="color:var(--navy)">💼 旅遊小提醒</h2>
+  <div class="card p-4 space-y-3 text-xs">
+    <div class="bg-blue-50 border border-blue-200 rounded-xl p-3"><div class="font-extrabold mb-1" style="color:var(--navy)">🌊 1. 11/27 (五) うずしお汽船雙重圈◎不繞路</div><p class="text-slate-600 leading-relaxed">首推搭早班 <b>09:00（雙重圈◎大潮）</b>，下船北上 10:35 抵幸福鬆餅免排隊，再去あわじ花さじき；若想睡飽則搭 <b>12:30（下午首班◎大潮）</b>。由南往北不走回頭路現省 40 分鐘！</p></div>
+    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3"><div class="font-extrabold text-emerald-900 mb-1">💳 2. 租「一般 ETC 卡」省 54%（現省 3,930 日圓）</div><p class="text-slate-600 leading-relaxed">本行程為跨區大環線，不需買 SEP 吃到飽，請務必向租車公司借<b>「一般計次扣款 ETC 卡」</b>！瀨戶大橋、大鳴門橋、明石海峽大橋通行費直接打 46 折，Day 5 還可直接下「吉備 Smart IC」！</p></div>
+    <div class="bg-orange-50 border border-orange-200 rounded-xl p-3"><div class="font-extrabold mb-1" style="color:#c85a28">🥩 3. 11/28 (六) 姬路停車與 13:30 神戶牛防遲到</div><p class="text-slate-600 leading-relaxed">週六姬路城大手門駐車場極易滿車，請於 <b>08:45 前停妥</b>；11:15 準時開車回神戶三宮，確保準時抵達 <b>13:30「Ishida. 生田新道店」</b>（Arc Coast 大樓 2F，勿跑錯分店）。</p></div>
+    <div class="bg-purple-50 border border-purple-200 rounded-xl p-3"><div class="font-extrabold text-purple-900 mb-1">⛩️ 4. 11/29 (日) 吉備津彥神社 30 分鐘直達機場還車</div><p class="text-slate-600 leading-relaxed">12:15 離開神社走縣道 72 號北上 30 分鐘即達機場旁 <b>ENEOS 岡山一宮店</b>加滿油（Regular 紅槍），13:10 抵<b>豐田租車岡山 岡山機場店（MapCode: 275 312 789*45）</b>驗車接駁，13:15 抵達航廈完美銜接 14:40 關櫃 / 15:25 起飛返台！</p></div>
+
+    <div class="pt-2 border-t border-slate-200">
+      <div class="flex justify-between mb-2"><h3 class="font-extrabold">✅ 自駕與隨身必備檢查清單 (自動儲存)</h3><button onclick="resetCL()" class="text-[11px] text-slate-400">重置</button></div>
+      <div id="cl" class="space-y-2"></div>
+    </div>
+    <div class="pt-3 border-t border-slate-200">
+      <h3 class="font-extrabold mb-2">💴 日幣換算 (1 JPY ≈ 0.215 TWD)</h3>
+      <div class="flex items-center gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+        <div class="flex-1"><label class="block text-[10px] font-bold text-slate-400">日幣 (JPY)</label><input id="jpy" type="number" inputmode="numeric" value="3930" oninput="conv()" class="w-full text-sm mc font-extrabold bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none" /></div>
+        <span class="text-slate-400 pt-4">➔</span>
+        <div class="flex-1 bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5 text-right"><div class="text-[10px] font-bold text-blue-700">約合新台幣</div><div id="twd" class="text-sm mc font-extrabold" style="color:var(--navy)">NT$ 845</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="mt-10 px-5 text-center text-xs text-slate-400">
+  <p class="font-semibold text-slate-500">2026 日本岡山・四國・淡路島・神戶 5天4夜自駕遊</p>
+</footer>
+
+<div id="toast" class="fixed left-1/2 z-50 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-lg" style="bottom:24px;transform:translateX(-50%);background:rgba(15,23,42,.95);opacity:0;pointer-events:none;transition:opacity .3s;max-width:90%"></div>
 </div>
 
 <script>
-  // ================= 0. GENERATE MOMOTARO (桃太郎) APP ICON (Exact Match to image_af9283.png) =================
-  (function generateMomotaroAppIcon() {
-    try {
-      function renderMomotaroCanvas(size) {
-        const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return null;
+// ============ 資料 ============
+var DAYS_META=[
+ {n:1,ic:"🌉",ttl:"Day 1｜11/25 (三) 抵達岡山・瀨戶大橋・高松",wiki:"瀬戸大橋",cap:"🌉 瀨戶大橋・与島PA 夕陽美景（11/25 日落 16:56）",rs:"岡山機場 ➔ 与島PA ➔ 香川高松",rd:"跨瀨戶大橋賞夕陽 (16:56日落)、高松美食口袋名單",tag:"宿：高松屋島",tc:"b",col:"#1a6bc4"},
+ {n:2,ic:"⛰️",ttl:"Day 2｜11/26 (四) 大步危峽谷・祖谷藤蔓橋",wiki:"大歩危",cap:"⛰️ 德島秘境・大步危峽谷遊船＆祖谷藤蔓橋",rs:"高松 ➔ 大步危遊船 ➔ 祖谷藤蔓橋 ➔ 屋島夜景",rd:"V字峽谷賞楓遊船、日本三大奇橋、屋島展望台百選夜景",tag:"宿：高松屋島",tc:"b",col:"#047857"},
+ {n:3,ic:"🌊",ttl:"Day 3｜11/27 (五) 鳴門漩渦・淡路島・神戶",wiki:"鳴門の渦潮",cap:"🌊 鳴門漩渦・大鳴門橋＆淡路島海岸",rs:"高松 ➔ 鳴門漩渦◎ ➔ 幸福鬆餅 ➔ 花さじき ➔ 神戶",rd:"雙重圈◎大潮汽船、淡路島由南往北不繞路、跨明石大橋",tag:"宿：神戶三宮",tc:"t",col:"#c85a28"},
+ {n:4,ic:"🏯",ttl:"Day 4｜11/28 (六) 姬路城・神戶牛・Outlet",wiki:"姫路城",cap:"🏯 世界遺產・國寶姬路城＆神戶牛排 Ishida.",rs:"神戶 ➔ 國寶姬路城 ➔ 神戶牛 Ishida. ➔ 三田 Outlet",rd:"09:00開城登天守閣、13:30預約A5神戶牛、關西最大Outlet",tag:"宿：神戶三宮",tc:"t",col:"#7e22ce"},
+ {n:5,ic:"⛩️",ttl:"Day 5｜11/29 (日) 吉備津雙神社・返台",wiki:"吉備津神社",cap:"⛩️ 岡山桃太郎傳說・吉備津彥神社＆吉備津神社",rs:"神戶 ➔ 吉備津彥神社＆吉備津神社 ➔ 岡山機場返台",rd:"桃太郎雙神社巡禮、ENEOS加油、13:10豐田租車還車接駁",tag:"15:25 起飛",tc:"s",col:"#0f766e"}
+];
+// [時間, 圓點色, 標題, 說明(可含HTML), [[按鈕文字, MapCode, 顯示文字]...]]
+var DAY_ITEMS={
+1:[
+["11:10","#1a6bc4","✈️ 桃園 ➔ 岡山機場 (IT214) ＆ 出關取車","14:35 抵達岡山桃太郎機場，出關辦理租車手續<br><span class='inline-block mt-1.5 bg-blue-50 text-blue-700 text-[11px] font-bold px-2.5 py-1 rounded-md'>💳 必租「一般計次扣款 ETC 卡」享跨海大橋 46 折</span>",[]],
+["16:15","#ef6c33","🌅 与島PA 休息站（停留 1 小時）","橫跨瀨戶大橋中途停靠，登上展望台欣賞瀨戶內海與大橋夕陽（日落 16:56），賣店營業至 21:00。",[["与島PA","391 758 817*58","🔢 MapCode: 391 758 817*58"]]],
+["18:00","#059669","🏨 Route Inn 高松屋島 Check-in ＆ 高松晚餐","連住兩晚！晚餐可前往高松中央商店街、Donki 丸龜町店（09:00-00:00）逛街採買。<div class='mt-1.5 bg-amber-50 border border-amber-200 rounded-xl p-2.5 space-y-1'><div class='font-bold text-amber-900'>🍗 高松晚餐・宵夜口袋名單：</div><p class='text-slate-600 text-[11px] leading-relaxed'>• <b>骨付鳥 一鶴 高松店</b> (17:00-23:00)：香川名物帶骨烤雞腿<br>• <b>串燒酒場 若八屋</b> (17:00-24:00) ／ <b>手打烏龍麵 鶴丸</b> (20:00-02:00 必吃咖哩烏龍)<br>• <b>德島拉麵 麵王 高松店</b> (11:00-24:00) ／ <b>ito</b> ／ <b>Kineya</b></p></div>",[["Route Inn 高松屋島","60 611 215*18","🏨 60 611 215*18"],["丸龜町營第4駐車場","60 606 545*45","🅿️ P4: 60 606 545*45"]]]
+],
+2:[
+["09:00","#1a6bc4","🚙 Route Inn 高松屋島出發","走高松自動車道／德島自動車道南下前往三好市大步危秘境（車程約 1.5 小時）。",[]],
+["10:40","#059669","🚤 大步危峽谷觀光遊覽船 ＋ 餐廳 Mannaka 午餐","乘船遊覽 30 分鐘（09:00-16:30 營運），近距離觀賞結晶片岩 V 字峽谷與秋日楓紅；同棟「レストラン大歩危峡まんなか」享用祖谷蕎麥麵與鄉土定食（免費停車）。",[["大步危峽谷遊覽船","357 151 826*61","🔢 MapCode: 357 151 826*61"]]],
+["13:30","#ef6c33","🌉 祖谷藤蔓橋 (かずら橋) ＆ 琵琶瀑布（停留 1.5hr）","日本三大奇橋之一，體驗步步驚心的藤蔓編織吊橋與瀑布秘境。車停「かずら橋 夢舞台」收費停車場（500円）。",[["祖谷藤蔓橋 夢舞台停車場","357 130 456*17","🔢 MapCode: 357 130 456*17"]]],
+["16:45","#4f46e5","🌃 返回高松・屋島展望台日本夜景百選","11/26 日落 16:55，登上屋島展望台俯瞰高松市區與瀨戶內海燈火（山上停車場 300円），下山即達飯店休息。",[["屋島展望台駐車場","60 672 588*14","🔢 MapCode: 60 672 588*14"]]]
+],
+"3A":[
+["07:45","#1a6bc4","🚙 高松退房出發 ➔ 08:40 抵龜浦觀光港","走高松道東行約 55 分鐘抵達鳴門（龜浦觀光港免費停車場）。",[]],
+["09:00","#0284c7","🚢 鳴門漩渦汽船 (うずしお汽船) 雙重圈◎大潮！","11/27 09:00 為觀潮最佳雙重圈◎時段，航程 30 分鐘近距離震撼直擊大漩渦。",[["うずしお汽船","406 211 595*12","🔢 406 211 595*12"]]],
+["10:35","#ef6c33","🥞 過大鳴門橋 ➔ 幸福鬆餅 淡路島度假村本店","10:30 開門即抵達免排大隊！海景露台享用舒芙蕾鬆餅、打卡幸福階梯與海景鞦韆（免費停車）。",[["幸福鬆餅淡路島本店","339 044 141*18","🔢 339 044 141*18"]]],
+["13:30","#059669","🌸 兵庫縣立公園 あわじ花さじき (淡路花迴廊)","由南往北不走回頭路！欣賞 11 月底紫羅蘭花海與明石海峽全景（16:30 最後入園，停車 200円）。",[["あわじ花さじき","339 207 106*63","🔢 339 207 106*63"]]],
+["16:00","#0d9488","🌉 跨明石海峽大橋 ➔ 神戶飯店 Check-in ＆ 神戶港夜景","入住神戶燦路都雅致大飯店，晚上漫步三宮中心街、元町商店街與神戶港 Mosaic 夜景。",[["神戶燦路都雅致大飯店","12 369 459*62","🔢 12 369 459*62"]]]
+],
+"3B":[
+["10:45","#1a6bc4","🚙 悠閒享用飯店早餐退房出發 ➔ 鳴門","睡飽從容出發，12:00 前抵達龜浦觀光港免費停車場換票。",[]],
+["12:30","#0284c7","🚢 鳴門漩渦汽船 (下午首班雙重圈◎大潮！)","12:30 下午首班◎大潮班次，同樣享有絕佳漩渦觀賞度。",[["うずしお汽船","406 211 595*12","🔢 406 211 595*12"]]],
+["14:00","#ef6c33","🥞 幸福鬆餅 淡路島本店 ➔ 15:45 あわじ花さじき","注意あわじ花さじき <b>16:30 最後入園</b>（17:00 閉園），務必掌控下午茶時間。",[]],
+["17:30","#0d9488","🌉 跨明石海峽大橋賞夜景 ➔ 神戶飯店 Check-in","傍晚經過明石海峽大橋可欣賞點燈奇景，隨後入住神戶三宮。",[["神戶燦路都雅致大飯店","12 369 459*62","🔢 12 369 459*62"]]]
+],
+4:[
+["07:45","#1a6bc4","🚙 神戶出發 ➔ 08:45 前停妥姬路城大手門駐車場","週六紅葉季大手門駐車場常於 09:00 滿車，務必 08:45 前進場！（備用：北側姬山駐車場 <b class='mc'>24 308 178*06</b>）",[["姬路城大手門駐車場","24 308 004*56","🔢 大手門駐車場: 24 308 004*56"]]],
+["09:00","#9333ea","🏯 國寶姬路城開城入園・優先登大天守閣","一開門直衝大天守閣免排長隊！<b>入城需脫鞋裝袋</b>，建議穿好穿脫鞋子與厚襪子（木地板偏涼）。<b>11:15 準時發車</b>返回神戶防週六塞車。",[]],
+["13:30","#ef6c33","🥩 【已預約】神戶牛排 Ishida. 生田新道店","主廚現煎頂級 A5 神戶牛！🚨 <b>防走錯提醒：</b>地址為「下山手通 2-1-14 Arc Coast 大樓 2F」，切勿跑錯至三宮本店！",[["COIN PARK 生田新道","12 368 693*45","🅿️ 周邊停車: 12 368 693*45"]]],
+["15:30","#0d9488","🛍️ 神戶三田 Premium Outlets ＆ AEON Mall","關西最大級 Outlet 血拼（20:00 閉館），連通 AEON Mall 享用晚餐後返回神戶飯店（推薦停免費 P3）。",[["神戶三田 Outlet P3","155 068 454*73","🔢 MapCode: 155 068 454*73"]]]
+],
+5:[
+["08:30","#1a6bc4","🚙 神戶飯店退房 ➔ 山陽自動車道西行","車程約 152km (1小時55分)。使用 ETC 卡直接從<b>「吉備スマートIC」</b>（或岡山IC）下交流道，3km 即達神社，比去倉敷省 25km 不繞路！",[]],
+["10:30","#059669","🍑 吉備津彥神社 ＆ 吉備津神社 參拜＋早午餐","<div class='bg-slate-50 p-2.5 rounded-xl border border-slate-200 space-y-2'><div><b>① 備前國一宮・吉備津彥神社</b>（免費停車100台）：「朝日の宮」，桃太郎原型古社，必看日本最大石燈籠、千年平安杉、白桃御守與桃子水占卜。</div><div class='pt-1.5 border-t border-slate-200'><b>② 備中國・吉備津神社</b>（車程5分）：日本唯一國寶「吉備津造」雙屋頂本殿、必拍 360 公尺木造大迴廊與鳴釜神事「御釜殿」！</div></div>",[["吉備津彥神社","275 013 898*17","🔢 彥神社: 275 013 898*17"],["吉備津神社","275 012 191*36","🔢 吉備津神社: 275 012 191*36"]]],
+["12:15","#ef6c33","⛽ 神社出發 ➔ 機場旁加油 ➔ 13:10 豐田租車歸還","走縣道72號北上僅 16km（約 30 分鐘）。先至 <b>ENEOS Dr.Driveセルフ岡山一宮店</b>加滿 Regular 紅色油槍並索取收據，13:10 抵達<b>岡山機場前 租車歸還區（豐田租車岡山 岡山機場店）</b>驗車接駁（還車專用，勿輸航廈電話）。<div class='mt-2 flex flex-wrap gap-1.5'><a target='_blank' rel='noopener' href='https://www.google.com/maps/search/?api=1&query=ENEOS+Dr.Drive+セルフ岡山一宮店' class='bg-orange-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full'>📍 加油站導航</a><a target='_blank' rel='noopener' href='https://www.google.com/maps/search/?api=1&query=トヨタレンタカー+岡山空港店' class='text-white text-[11px] font-bold px-2.5 py-1 rounded-full' style='background:#1a6bc4'>📍 豐田還車導航</a></div>",[["ENEOS 岡山一宮店","275 075 466*63","⛽ 275 075 466*63"],["豐田租車岡山機場店","275 312 789*45","🚗 275 312 789*45"]]],
+["13:15","#0d9488","✈️ 抵達岡山機場報到（14:40 關櫃 ➔ 15:25 起飛）","搭乘 IT215 返台，17:35 平安抵達桃園機場！",[]]
+]};
 
-        const scale = size / 180;
-        ctx.scale(scale, scale);
+var HOTELS=[
+ {lb:"【Day 1 - 2】香川高松・連住兩晚",wiki:"屋島",bd:"前兩晚",dt:"📅 11/25 (三) – 11/27 (五)",nm:"Route Inn 高松屋島 (ホテルルートイン高松屋島)",ad:"📍 香川県高松市春日町1653-2 ｜ 📞 087-841-6511",q:"ホテルルートイン高松屋島",mc:"60 611 215*18",dl:"📞 導航電話：087-841-6511<br>🛍️ 夜間逛街備案：高松中央商店街 (10:00-20:00)、Donki 唐吉訶德丸龜町店 (09:00-00:00)<br>🅿️ 高松商店街周邊停車場：<br>• 丸龜町營第4駐車場 (P-4) <b class='mc'>60 606 545*45</b><br>• 丸亀町壱番街駐車場 <b class='mc'>60 636 193*37</b>",dtt:"🚗 飯店導航・電話與高松商店街停車備案"},
+ {lb:"【Day 3 - 4】兵庫神戶・連住兩晚",wiki:"神戸港",bd:"後兩晚",dt:"📅 11/27 (五) – 11/29 (日)",nm:"神戶燦路都雅致大飯店 (ホテルサンルートソプラ神戸)",ad:"📍 兵庫県神戸市中央区磯辺通1-1-22 ｜ 📞 078-222-7500",q:"ホテルサンルートソプラ神戸",mc:"12 369 459*62",dl:"📞 導航電話：078-222-7500<br>🌃 夜間推薦：三宮中心街購物、元町商店街、神戶港 (Mosaic / umie) 璀璨海港夜景",dtt:"🚗 飯店導航・電話與神戶三宮夜間行程"}
+];
 
-        const hairBrown = '#6E5D4B';
-        const skinPeach = '#FCECE2';
-        const leafGreen = '#7BB657';
-        const leafVein = '#19803E';
-        const miniPeachPink = '#F38BB2';
+var SPOTS=[
+ ["与島PA 休息站 (瀨戶大橋)","必訪跨海大橋","登上展望台飽覽瀨戶大橋黃昏美景（11/25 日落 16:56），賣店營業至 21:00。","391 758 817*58","瀬戸大橋","与島パーキングエリア"],
+ ["大步危峽谷觀光遊覽船","賞楓奇岩秘境","航程約 30 分鐘（09:00-16:30），乘船近距離欣賞 V 字峽谷與秋日楓紅奇岩。","357 151 826*61","大歩危","大歩危峡観光遊覧船"],
+ ["祖谷藤蔓橋 (かずら橋)","日本三大奇橋","體驗走過野生獼猴桃藤蔓編織吊橋，欣賞琵琶瀑布與溪谷美景（停車 500円）。","357 130 456*17","祖谷のかずら橋","祖谷のかずら橋"],
+ ["鳴門漩渦 (うずしお汽船)","雙重圈◎大潮","11/27 雙重圈◎大潮（09:00 或 12:30 船班），30 分鐘航程震撼直擊世界最大級漩渦！","406 211 595*12","鳴門の渦潮","うずしお汽船"],
+ ["あわじ花さじき (淡路花迴廊)","海景花海","欣賞 11 月底紫羅蘭與金魚草花海，遠眺明石海峽與大阪灣（16:30 最後入園）。","339 207 106*63","あわじ花さじき","あわじ花さじき"],
+ ["世界遺產・國寶姬路城","日本第一名城","09:00 開城即入園優先登大天守閣（需脫鞋，建議穿好穿脫鞋襪；08:45前停妥車）。","24 308 004*56","姫路城","姫路城 大手門駐車場"],
+ ["神戶三田 Premium Outlets","購物血拼","關西最大級 Outlet 盡情購物（20:00 閉館），連通 AEON Mall 用餐（推薦停免費 P3）。","155 068 454*73","神戸三田プレミアム・アウトレット","神戸三田プレミアム・アウトレット"],
+ ["吉備津彥神社 & 吉備津神社","桃太郎傳說","參拜桃太郎古社白桃御守、水占卜，以及國寶吉備津造雙屋頂與 360m 木造大迴廊！","275 013 898*17","吉備津神社","吉備津彦神社"]
+];
+var FOOD=[
+ ["神戶牛排 Ishida. 生田新道店","頂級 A5 神戶牛","🔥 已預約 11/28 13:30","主廚鐵板現煎 A5 神戶牛！（店址：下山手通 2-1-14 Arc Coast 大樓 2F，勿跑錯分店）","12 368 693*45","神戸ビーフ","神戸牛ステーキ Ishida. 生田新道店"],
+ ["幸福鬆餅 淡路島度假村本店","海景舒芙蕾","10:35 開門免排隊","品嚐雲朵般綿密舒芙蕾鬆餅，必拍網美海景階梯、海景鞦韆與透明圓椅！","339 044 141*18","パンケーキ","幸せのパンケーキ 淡路島リゾート"],
+ ["大步危峽谷 餐廳 Mannaka","德島鄉土料理","09:00-17:00","與大步危遊覽船同棟（レストラン大歩危峡まんなか），搭船前後享用祖谷蕎麥麵與定食。","357 151 826*61","祖谷そば","レストラン大歩危峡まんなか"],
+ ["骨付鳥 一鶴 高松店","香川名物","17:00-23:00","高松必吃帶骨烤雞腿！外皮酥脆肉汁飽滿，有富嚼勁的親鳥與鮮嫩多汁的雛鳥。","60 606 545*45","骨付鳥","骨付鳥 一鶴 高松店"],
+ ["串燒酒場 若八屋 & 鶴丸烏龍麵","高松晚餐宵夜","人氣口袋名單","若八屋串燒 (17-24)、手打烏龍麵鶴丸 (20-02 必吃咖哩烏龍)、德島拉麵麵王 (11-24)。","60 636 193*37","讃岐うどん","手打ちうどん 鶴丸"]
+];
 
-        // 1. Clean Solid White Background (#FFFFFF) so iOS never renders black corners
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, 180, 180);
+var MCDIR=[
+ ["D1","11/25","岡山桃太郎機場 (航廈)","275 312 741*88","086-294-5201"],
+ ["D1","11/25","与島PA 休息站 (瀨戶大橋與島停車場)","391 758 817*58","0877-43-0226"],
+ ["D1","11/25-27","Route Inn 高松屋島 (ホテルルートイン高松屋島)","60 611 215*18","087-841-6511"],
+ ["D1","11/25","高松中央商店街 / Donki (丸龜町營第4駐車場 P-4)","60 606 545*45","087-812-2620"],
+ ["D1","11/25","高松中央商店街 / Donki (丸亀町壱番街駐車場)","60 636 193*37","依 MapCode 導航"],
+ ["D2","11/26","大步危峽谷觀光遊覽船 / 餐廳 Mannaka (免費停車)","357 151 826*61","0883-84-1211"],
+ ["D2","11/26","祖谷藤蔓橋 (かずら橋 夢舞台收費停車場 500円)","357 130 456*17","0883-87-2200"],
+ ["D2","11/26","屋島展望台 (屋島山上收費停車場 300円)","60 672 588*14","087-841-9443"],
+ ["D3","11/27","鳴門漩渦 うずしお汽船 (龜浦觀光港免費停車場)","406 211 595*12","088-687-0613"],
+ ["D3","11/27","幸福鬆餅 淡路島度假村本店 (免費停車場)","339 044 141*18","0799-85-1111"],
+ ["D3","11/27","兵庫縣立公園 あわじ花さじき (收費停車場 200円)","339 207 106*63","0799-74-6426"],
+ ["D3","11/27-29","神戶燦路都雅致大飯店 (ホテルサンルートソプラ神戸)","12 369 459*62","078-222-7500"],
+ ["D4","11/28","國寶 姬路城 (大手門駐車場 08:45前停妥)","24 308 004*56","079-284-1533"],
+ ["D4","11/28","國寶 姬路城 (備用：北側 姬山駐車場)","24 308 178*06","備用停車場"],
+ ["D4","11/28","神戶牛 Ishida. 生田新道店周邊① COIN PARK 生田新道","12 368 693*45","078-335-5922"],
+ ["D4","11/28","神戶牛 Ishida. 生田新道店周邊② システムパーク下山手通2丁目","12 368 752*76","依 MapCode 導航"],
+ ["D4","11/28","神戶牛 Ishida. 生田新道店周邊③ タイムズ下山手通２丁目","12 367 779*12","依 MapCode 導航"],
+ ["D4","11/28","神戶三田 Premium Outlets (免費停車場 P3)","155 068 454*73","078-983-3300"],
+ ["D5","11/29","吉備津彥神社 (備前國一宮・免費駐車場 100台)","275 013 898*17","086-284-0031"],
+ ["D5","11/29","吉備津神社 (備中國・第一駐車場收費)","275 012 191*36","依 MapCode 導航"],
+ ["D5","11/29","ENEOS Dr.Driveセルフ岡山一宮店 (還車前加油)","275 075 466*63","依 MapCode 導航"],
+ ["D5","11/29","岡山機場前 租車歸還區（豐田租車岡山 岡山機場店）","275 312 789*45","還車專用・勿輸航廈電話"]
+];
+var CHECK=[
+ ["c1","台灣駕照正本 ＋ 日文譯本（全體駕駛必帶！）"],
+ ["c2","護照正本（效期6個月以上）＆ Visit Japan Web QR Code"],
+ ["c3","取車時確認租借「一般計次扣款 ETC 卡」（跨海大橋46折）"],
+ ["c4","確認 11/28 (六) 13:30 神戶牛 Ishida. 生田新道店預約信"],
+ ["c5","11/28 登姬路城穿好穿脫的鞋子與厚襪子（入城需脫鞋）"],
+ ["c6","11/29 還車前於 ENEOS 岡山一宮店加滿油（Regular 紅槍）並留收據"]
+];
+var WX=[
+ {d:"2026-11-25",l:"11/25",w:"(三)",a:"岡山・高松",lat:34.3428,lon:134.0466,i:"🌤️",mn:9,mx:16,r:15},
+ {d:"2026-11-26",l:"11/26",w:"(四)",a:"大步危・祖谷",lat:33.886,lon:133.76,i:"⛅",mn:6,mx:14,r:20},
+ {d:"2026-11-27",l:"11/27",w:"(五)",a:"鳴門・淡路島",lat:34.2372,lon:134.6392,i:"☀️",mn:10,mx:17,r:10},
+ {d:"2026-11-28",l:"11/28",w:"(六)",a:"姬路・神戶",lat:34.6901,lon:135.1956,i:"🌤️",mn:10,mx:16,r:15},
+ {d:"2026-11-29",l:"11/29",w:"(日)",a:"吉備津・岡山",lat:34.6618,lon:133.9344,i:"☀️",mn:8,mx:16,r:10}
+];
 
-        // 2. Lower Face Base (Soft warm light peach skin #FCECE2)
-        ctx.fillStyle = skinPeach;
-        ctx.beginPath();
-        ctx.moveTo(25, 88);
-        ctx.bezierCurveTo(25, 134, 50, 162, 90, 162);
-        ctx.bezierCurveTo(130, 162, 155, 134, 155, 88);
-        ctx.lineTo(155, 70);
-        ctx.lineTo(25, 70);
-        ctx.closePath();
-        ctx.fill();
-
-        // 3. White Arched Forehead / Headband Area (#FFFFFF)
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath();
-        ctx.moveTo(62, 100);
-        ctx.bezierCurveTo(68, 73, 82, 63, 90, 70);
-        ctx.bezierCurveTo(98, 63, 112, 73, 118, 100);
-        ctx.closePath();
-        ctx.fill();
-
-        // 4. Peach-Shaped Dark Warm Brown Hair (#6E5D4B) with rounded bottom corners
-        ctx.fillStyle = hairBrown;
-        ctx.beginPath();
-        ctx.moveTo(90, 34);
-        ctx.bezierCurveTo(83, 24, 67, 23, 50, 32);
-        ctx.bezierCurveTo(30, 43, 20, 66, 20, 89);
-        ctx.bezierCurveTo(20, 96, 24, 100, 31, 100);
-        ctx.lineTo(62, 100);
-        ctx.bezierCurveTo(66, 100, 68, 97, 70, 92);
-        ctx.bezierCurveTo(75, 75, 84, 68, 90, 73);
-        ctx.bezierCurveTo(96, 68, 105, 75, 110, 92);
-        ctx.bezierCurveTo(112, 97, 114, 100, 118, 100);
-        ctx.lineTo(149, 100);
-        ctx.bezierCurveTo(156, 100, 160, 96, 160, 89);
-        ctx.bezierCurveTo(160, 66, 150, 43, 130, 32);
-        ctx.bezierCurveTo(113, 23, 97, 24, 90, 34);
-        ctx.closePath();
-        ctx.fill();
-
-        // 5. Top-Right Bright Green Peach Leaf (#7BB657) with Dark Green Midrib Vein (#19803E)
-        ctx.save();
-        ctx.fillStyle = leafGreen;
-        ctx.beginPath();
-        ctx.moveTo(84, 40);
-        ctx.bezierCurveTo(86, 17, 117, 9, 151, 27);
-        ctx.bezierCurveTo(129, 41, 103, 45, 84, 40);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.strokeStyle = leafVein;
-        ctx.lineWidth = 3;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(88, 38);
-        ctx.quadraticCurveTo(114, 25, 146, 27);
-        ctx.stroke();
-        ctx.restore();
-
-        // 6. Forehead Pink Peach Emblem (#F38BB2) & Two Small Green Leaves (#7BB657)
-        ctx.fillStyle = leafGreen;
-        ctx.beginPath();
-        ctx.moveTo(89, 95);
-        ctx.bezierCurveTo(81, 99, 74, 97, 71, 93);
-        ctx.bezierCurveTo(77, 89, 84, 91, 89, 95);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.moveTo(91, 95);
-        ctx.bezierCurveTo(99, 99, 106, 97, 109, 93);
-        ctx.bezierCurveTo(103, 89, 96, 91, 91, 95);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.fillStyle = miniPeachPink;
-        ctx.beginPath();
-        ctx.moveTo(90, 67);
-        ctx.bezierCurveTo(97, 72, 101, 79, 100, 86);
-        ctx.bezierCurveTo(99, 92, 94, 95, 90, 94);
-        ctx.bezierCurveTo(86, 95, 81, 92, 80, 86);
-        ctx.bezierCurveTo(79, 79, 83, 72, 90, 67);
-        ctx.closePath();
-        ctx.fill();
-
-        // Subtle peach cleft highlight
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.48)';
-        ctx.lineWidth = 1.4;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(90, 71);
-        ctx.quadraticCurveTo(88, 81, 90, 92);
-        ctx.stroke();
-
-        // 7. Soft Diffused Pink Cheek Blushes (#F8A5C2)
-        const drawBlush = (cx, cy) => {
-          const blushGrad = ctx.createRadialGradient(cx, cy, 2, cx, cy, 17);
-          blushGrad.addColorStop(0, 'rgba(248, 165, 194, 0.72)');
-          blushGrad.addColorStop(0.6, 'rgba(248, 165, 194, 0.28)');
-          blushGrad.addColorStop(1, 'rgba(248, 165, 194, 0)');
-          ctx.fillStyle = blushGrad;
-          ctx.beginPath();
-          ctx.arc(cx, cy, 17, 0, Math.PI * 2);
-          ctx.fill();
-        };
-        drawBlush(49, 129);
-        drawBlush(131, 129);
-
-        // 8. Two Vertical Oval Dark Brown Eyes (#6E5D4B)
-        ctx.fillStyle = hairBrown;
-        ctx.beginPath();
-        ctx.ellipse(59, 117, 7.2, 11.5, 0, 0, Math.PI * 2);
-        ctx.ellipse(121, 117, 7.2, 11.5, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 9. Gentle Curved Dark Brown Smile (#6E5D4B)
-        ctx.strokeStyle = hairBrown;
-        ctx.lineWidth = 5.2;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(75, 136);
-        ctx.bezierCurveTo(78, 147, 102, 147, 105, 136);
-        ctx.stroke();
-
-        return canvas.toDataURL('image/png');
-      }
-
-      const appleIconUrl = renderMomotaroCanvas(180);
-      const favIconUrl = renderMomotaroCanvas(512);
-      const appleIcon = document.getElementById('apple-touch-icon-link');
-      const favIcon = document.getElementById('favicon-link');
-      if (appleIcon && appleIconUrl) appleIcon.href = appleIconUrl;
-      if (favIcon && favIconUrl) favIcon.href = favIconUrl;
-    } catch (e) {
-      // Keeps static SVG fallback if canvas is restricted
-    }
-  })();
-
-  // ================= 1. LIVE COUNTDOWN TIMER =================
-  const targetDate = new Date('2026-11-25T11:10:00+08:00').getTime();
-
-  function updateCountdown() {
-    const now = new Date().getTime();
-    const diff = targetDate - now;
-    const displayEl = document.getElementById('countdown-display');
-
-    if (diff <= 0) {
-      displayEl.innerHTML = `<span class="text-[#ef6c33]">🎉 旅程進行中・旅途愉快！</span>`;
-      return;
-    }
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-    displayEl.innerHTML = `
-      <span>${days}天</span>
-      <span>${String(hours).padStart(2, '0')}小時</span>
-      <span>${String(mins).padStart(2, '0')}分</span>
-      <span class="text-[#ef6c33]">${String(secs).padStart(2, '0')}秒</span>
-    `;
+// ============ 桃太郎 App 圖示 ============
+(function(){try{
+  function draw(size){
+    var c=document.createElement("canvas");c.width=c.height=size;var x=c.getContext("2d");if(!x)return null;
+    x.scale(size/180,size/180);
+    var hair="#6E5D4B",skin="#FCECE2",leaf="#7BB657",vein="#19803E",peach="#F38BB2";
+    x.fillStyle="#FFF";x.fillRect(0,0,180,180);
+    x.fillStyle=skin;x.beginPath();x.moveTo(25,88);x.bezierCurveTo(25,134,50,162,90,162);x.bezierCurveTo(130,162,155,134,155,88);x.lineTo(155,70);x.lineTo(25,70);x.fill();
+    x.fillStyle="#FFF";x.beginPath();x.moveTo(62,100);x.bezierCurveTo(68,73,82,63,90,70);x.bezierCurveTo(98,63,112,73,118,100);x.fill();
+    x.fillStyle=hair;x.beginPath();x.moveTo(90,34);x.bezierCurveTo(83,24,67,23,50,32);x.bezierCurveTo(30,43,20,66,20,89);x.bezierCurveTo(20,96,24,100,31,100);x.lineTo(62,100);x.bezierCurveTo(66,100,68,97,70,92);x.bezierCurveTo(75,75,84,68,90,73);x.bezierCurveTo(96,68,105,75,110,92);x.bezierCurveTo(112,97,114,100,118,100);x.lineTo(149,100);x.bezierCurveTo(156,100,160,96,160,89);x.bezierCurveTo(160,66,150,43,130,32);x.bezierCurveTo(113,23,97,24,90,34);x.fill();
+    x.fillStyle=leaf;x.beginPath();x.moveTo(84,40);x.bezierCurveTo(86,17,117,9,151,27);x.bezierCurveTo(129,41,103,45,84,40);x.fill();
+    x.strokeStyle=vein;x.lineWidth=3;x.lineCap="round";x.beginPath();x.moveTo(88,38);x.quadraticCurveTo(114,25,146,27);x.stroke();
+    x.fillStyle=leaf;x.beginPath();x.moveTo(89,95);x.bezierCurveTo(81,99,74,97,71,93);x.bezierCurveTo(77,89,84,91,89,95);x.fill();
+    x.beginPath();x.moveTo(91,95);x.bezierCurveTo(99,99,106,97,109,93);x.bezierCurveTo(103,89,96,91,91,95);x.fill();
+    x.fillStyle=peach;x.beginPath();x.moveTo(90,67);x.bezierCurveTo(97,72,101,79,100,86);x.bezierCurveTo(99,92,94,95,90,94);x.bezierCurveTo(86,95,81,92,80,86);x.bezierCurveTo(79,79,83,72,90,67);x.fill();
+    x.strokeStyle="rgba(255,255,255,.48)";x.lineWidth=1.4;x.beginPath();x.moveTo(90,71);x.quadraticCurveTo(88,81,90,92);x.stroke();
+    [[49,129],[131,129]].forEach(function(p){var g=x.createRadialGradient(p[0],p[1],2,p[0],p[1],17);g.addColorStop(0,"rgba(248,165,194,.72)");g.addColorStop(.6,"rgba(248,165,194,.28)");g.addColorStop(1,"rgba(248,165,194,0)");x.fillStyle=g;x.beginPath();x.arc(p[0],p[1],17,0,Math.PI*2);x.fill()});
+    x.fillStyle=hair;x.beginPath();x.ellipse(59,117,7.2,11.5,0,0,Math.PI*2);x.ellipse(121,117,7.2,11.5,0,0,Math.PI*2);x.fill();
+    x.strokeStyle=hair;x.lineWidth=5.2;x.beginPath();x.moveTo(75,136);x.bezierCurveTo(78,147,102,147,105,136);x.stroke();
+    return c.toDataURL("image/png");
   }
-  setInterval(updateCountdown, 1000);
-  updateCountdown();
+  var a=draw(180),f=draw(512);
+  if(a)$("apple-touch-icon-link").href=a;
+  if(f)$("favicon-link").href=f;
+}catch(e){}})();
 
-  // ================= 2. 5-DAY WEATHER (Zero-Blank Immediate Render + Multi-City Open-Meteo 16-Day Fetch) =================
-  const tripWeatherDays = [
-    {
-      isoDate: '2026-11-25',
-      date: '11/25',
-      day: '(三)',
-      area: '岡山・高松',
-      lat: 34.3428,
-      lon: 134.0466,
-      defaultIcon: '🌤️',
-      defaultMin: 9,
-      defaultMax: 16,
-      defaultRain: 15,
-      liveIcon: null,
-      liveMin: null,
-      liveMax: null,
-      liveRain: null,
-      source: 'climate'
-    },
-    {
-      isoDate: '2026-11-26',
-      date: '11/26',
-      day: '(四)',
-      area: '大步危・祖谷',
-      lat: 33.8860,
-      lon: 133.7600,
-      defaultIcon: '⛅',
-      defaultMin: 6,
-      defaultMax: 14,
-      defaultRain: 20,
-      liveIcon: null,
-      liveMin: null,
-      liveMax: null,
-      liveRain: null,
-      source: 'climate'
-    },
-    {
-      isoDate: '2026-11-27',
-      date: '11/27',
-      day: '(五)',
-      area: '鳴門・淡路島',
-      lat: 34.2372,
-      lon: 134.6392,
-      defaultIcon: '☀️',
-      defaultMin: 10,
-      defaultMax: 17,
-      defaultRain: 10,
-      liveIcon: null,
-      liveMin: null,
-      liveMax: null,
-      liveRain: null,
-      source: 'climate'
-    },
-    {
-      isoDate: '2026-11-28',
-      date: '11/28',
-      day: '(六)',
-      area: '姬路・神戶',
-      lat: 34.6901,
-      lon: 135.1956,
-      defaultIcon: '🌤️',
-      defaultMin: 10,
-      defaultMax: 16,
-      defaultRain: 15,
-      liveIcon: null,
-      liveMin: null,
-      liveMax: null,
-      liveRain: null,
-      source: 'climate'
-    },
-    {
-      isoDate: '2026-11-29',
-      date: '11/29',
-      day: '(日)',
-      area: '吉備津・岡山',
-      lat: 34.6618,
-      lon: 133.9344,
-      defaultIcon: '☀️',
-      defaultMin: 8,
-      defaultMax: 16,
-      defaultRain: 10,
-      liveIcon: null,
-      liveMin: null,
-      liveMax: null,
-      liveRain: null,
-      source: 'climate'
-    }
-  ];
-
-  let showingLiveWeather = true;
-  let anyLiveMatched = false;
-
-  function weatherCodeToEmoji(code) {
-    if (code === undefined || code === null) return '🌤️';
-    if (code === 0) return '☀️';
-    if (code <= 2) return '🌤️';
-    if (code <= 48) return '⛅';
-    if (code <= 67) return '🌧️';
-    if (code <= 77) return '❄️';
-    return '🌦️';
+// ============ 工具 ============
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/'/g,"\\'")}
+// 圖片佔位：先顯示漸層，再嘗試用維基百科抓圖，抓不到就維持漸層
+function photo(wiki,label,cls){
+  return "<div class='ph "+(cls||"h-44")+"' data-wiki='"+wiki+"'><span>📸 "+label+"</span></div>";
+}
+var wikiCache={};
+function wikiImg(t){
+  if(!wikiCache[t]){
+    wikiCache[t]=fetch("https://ja.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(t))
+      .then(function(r){return r.ok?r.json():null})
+      .then(function(j){return j&&((j.originalimage&&j.originalimage.source)||(j.thumbnail&&j.thumbnail.source))||null})
+      .catch(function(){return null});
   }
-
-  function renderWeather() {
-    const grid = document.getElementById('weather-grid');
-    if (!grid) return;
-
-    grid.innerHTML = tripWeatherDays.map((item) => {
-      const useLive = showingLiveWeather && item.liveMax !== null;
-      const icon = useLive ? item.liveIcon : item.defaultIcon;
-      const minT = useLive ? item.liveMin : item.defaultMin;
-      const maxT = useLive ? item.liveMax : item.defaultMax;
-      const rainP = useLive ? item.liveRain : item.defaultRain;
-
-      return `
-        <div class="flex flex-col items-center py-1 px-0.5">
-          <div class="text-xs font-extrabold text-slate-800">${item.date}</div>
-          <div class="text-[11px] text-slate-400 font-semibold">${item.day}</div>
-          <div class="text-[10px] text-[#1a6bc4] bg-blue-50/80 px-1.5 py-0.5 rounded font-bold mt-1 truncate max-w-full">${item.area}</div>
-          <div class="text-2xl my-2 select-none">${icon}</div>
-          <div class="text-xs font-extrabold text-slate-800">${minT}° <span class="text-slate-400 font-normal">${maxT}°</span></div>
-          <div class="text-[11px] font-semibold text-sky-600 mt-1 flex items-center gap-0.5">
-            <span>💧</span><span>${rainP}%</span>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  async function fetchMultiCityWeather() {
-    // 1. Render immediately so UI is never blank
-    renderWeather();
-
-    try {
-      const lats = tripWeatherDays.map(d => d.lat).join(',');
-      const lons = tripWeatherDays.map(d => d.lon).join(',');
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo&forecast_days=16`;
-
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      const results = Array.isArray(data) ? data : [data];
-
-      tripWeatherDays.forEach((dayObj, idx) => {
-        const cityData = results[idx] || results[0];
-        if (!cityData || !cityData.daily || !Array.isArray(cityData.daily.time)) return;
-
-        let dateIndex = cityData.daily.time.indexOf(dayObj.isoDate);
-        if (dateIndex === -1) {
-          dateIndex = idx < cityData.daily.time.length ? idx : 0;
-        }
-
-        const rawCode = cityData.daily.weather_code ? cityData.daily.weather_code[dateIndex] : null;
-        const rawMin = cityData.daily.temperature_2m_min ? cityData.daily.temperature_2m_min[dateIndex] : null;
-        const rawMax = cityData.daily.temperature_2m_max ? cityData.daily.temperature_2m_max[dateIndex] : null;
-        const rawRain = cityData.daily.precipitation_probability_max ? cityData.daily.precipitation_probability_max[dateIndex] : null;
-
-        if (rawMax !== null && rawMin !== null) {
-          dayObj.liveIcon = weatherCodeToEmoji(rawCode);
-          dayObj.liveMin = Math.round(rawMin);
-          dayObj.liveMax = Math.round(rawMax);
-          dayObj.liveRain = (rawRain !== null && rawRain !== undefined) ? Math.round(rawRain) : dayObj.defaultRain;
-          anyLiveMatched = true;
-        }
-      });
-
-      renderWeather();
-    } catch (err) {
-      renderWeather();
-    }
-  }
-
-  // Render immediately on script load, then silently fetch live data in background
-  renderWeather();
-  fetchMultiCityWeather();
-
-  // ================= 3. SPOTS CAROUSEL DATA =================
-  const spotsData = [
-    {
-      name: '与島PA 休息站 (瀨戶大橋)',
-      tag: '必訪跨海大橋',
-      desc: '登上展望台飽覽瀨戶大橋黃昏美景（11/25 日落 16:56），賣店營業至 21:00。',
-      mapcode: '391 758 817*58',
-      img: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600&q=80',
-      query: '与島パーキングエリア'
-    },
-    {
-      name: '大步危峽谷觀光遊覽船',
-      tag: '賞楓奇岩秘境',
-      desc: '航程約 30 分鐘（09:00-16:30），乘船近距離欣賞 V 字峽谷與秋日楓紅奇岩。',
-      mapcode: '357 151 826*61',
-      img: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=600&q=80',
-      query: '大歩危峡観光遊覧船'
-    },
-    {
-      name: '祖谷藤蔓橋 (かずら橋)',
-      tag: '日本三大奇橋',
-      desc: '體驗走過野生獼猴桃藤蔓編織吊橋，欣賞琵琶瀑布與溪谷美景（停車 500円）。',
-      mapcode: '357 130 456*17',
-      img: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80',
-      query: '祖谷のかずら橋'
-    },
-    {
-      name: '鳴門漩渦 (うずしお汽船)',
-      tag: '雙重圈◎大潮',
-      desc: '11/27 雙重圈◎大潮（09:00 或 12:30 船班），30 分鐘航程震撼直擊世界最大級漩渦！',
-      mapcode: '406 211 595*12',
-      img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80',
-      query: 'うずしお汽船'
-    },
-    {
-      name: 'あわじ花さじき (淡路花迴廊)',
-      tag: '海景花海',
-      desc: '欣賞 11 月底紫羅蘭與金魚草花海，遠眺明石海峽與大阪灣（16:30 最後入園）。',
-      mapcode: '339 207 106*63',
-      img: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=600&q=80',
-      query: 'あわじ花さじき'
-    },
-    {
-      name: '世界遺產・國寶姬路城',
-      tag: '日本第一名城',
-      desc: '09:00 開城即入園優先登大天守閣（需脫鞋，建議穿好穿脫鞋襪；08:45前停妥車）。',
-      mapcode: '24 308 004*56',
-      img: 'https://images.unsplash.com/photo-1578469645742-46cae010e5d4?auto=format&fit=crop&w=600&q=80',
-      query: '姫路城 大手門駐車場'
-    },
-    {
-      name: '神戶三田 Premium Outlets',
-      tag: '購物血拼',
-      desc: '關西最大級 Outlet 盡情購物（20:00 閉館），連通 AEON Mall 用餐（推薦停免費 P3）。',
-      mapcode: '155 068 454*73',
-      img: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=600&q=80',
-      query: '神戸三田プレミアム・アウトレット'
-    },
-    {
-      name: '吉備津彥神社 & 吉備津神社',
-      tag: '桃太郎傳說',
-      desc: '參拜桃太郎古社白桃御守、水占卜，以及國寶吉備津造雙屋頂與 360m 木造大迴廊！',
-      mapcode: '275 013 898*17',
-      img: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=600&q=80',
-      query: '吉備津彦神社'
-    }
-  ];
-
-  function renderSpots() {
-    const container = document.getElementById('spots-carousel');
-    container.innerHTML = spotsData.map(spot => `
-      <div class="snap-item trip-card overflow-hidden flex flex-col justify-between">
-        <div>
-          <div class="h-36 w-full overflow-hidden relative">
-            <img src="${spot.img}" alt="${spot.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x250/1a6bc4/ffffff?text=Spot'" />
-          </div>
-          <div class="p-4">
-            <h3 class="font-extrabold text-[15px] text-slate-800 leading-snug">${spot.name}</h3>
-            <span class="inline-block mt-1.5 text-[11px] font-bold text-[#1a6bc4] bg-blue-50 px-2.5 py-0.5 rounded-md">
-              ${spot.tag}
-            </span>
-            <p class="text-xs text-slate-500 mt-2 leading-relaxed line-clamp-3">
-              ${spot.desc}
-            </p>
-          </div>
-        </div>
-        <div class="px-4 pb-4 pt-1 flex items-center gap-2">
-          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.query)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-[#1a6bc4] hover:bg-[#155a96] text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-sm transition">
-            📍 地圖
-          </a>
-          <button onclick="copyText('${spot.mapcode}', '${spot.name} MapCode')" class="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold px-2.5 py-1.5 rounded-full transition">
-            🔢 ${spot.mapcode}
-          </button>
-        </div>
-      </div>
-    `).join('');
-  }
-  renderSpots();
-
-  // ================= 4. FOOD CAROUSEL DATA =================
-  const foodData = [
-    {
-      name: '神戶牛排 Ishida. 生田新道店',
-      tag1: '頂級 A5 神戶牛',
-      tag2: '🔥 已預約 11/28 13:30',
-      desc: '主廚鐵板現煎 A5 神戶牛！（店址：下山手通 2-1-14 Arc Coast 大樓 2F，勿跑錯分店）',
-      mapcode: '12 368 693*45',
-      img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
-      query: '神戸牛ステーキ Ishida. 生田新道店'
-    },
-    {
-      name: '幸福鬆餅 淡路島度假村本店',
-      tag1: '海景舒芙蕾',
-      tag2: '10:35 開門免排隊',
-      desc: '品嚐雲朵般綿密舒芙蕾鬆餅，必拍網美海景階梯、海景鞦韆與透明圓椅！',
-      mapcode: '339 044 141*18',
-      img: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=600&q=80',
-      query: '幸せのパンケーキ 淡路島リゾート'
-    },
-    {
-      name: '大步危峽谷 餐廳 Mannaka',
-      tag1: '德島鄉土料理',
-      tag2: '09:00-17:00',
-      desc: '與大步危遊覽船同棟（レストラン大歩危峡まんなか），搭船前後享用祖谷蕎麥麵與定食。',
-      mapcode: '357 151 826*61',
-      img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80',
-      query: 'レストラン大歩危峡まんなか'
-    },
-    {
-      name: '骨付鳥 一鶴 高松店',
-      tag1: '香川名物',
-      tag2: '17:00-23:00',
-      desc: '高松必吃帶骨烤雞腿！外皮酥脆肉汁飽滿，有富嚼勁的親鳥與鮮嫩多汁的雛鳥。',
-      mapcode: '60 606 545*45',
-      img: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=600&q=80',
-      query: '骨付鳥 一鶴 高松店'
-    },
-    {
-      name: '串燒酒場 若八屋 & 鶴丸烏龍麵',
-      tag1: '高松晚餐宵夜',
-      tag2: '人氣口袋名單',
-      desc: '若八屋串燒 (17-24)、手打烏龍麵鶴丸 (20-02 必吃咖哩烏龍)、德島拉麵麵王 (11-24)。',
-      mapcode: '60 636 193*37',
-      img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80',
-      query: '手打ちうどん 鶴丸'
-    }
-  ];
-
-  function renderFood() {
-    const container = document.getElementById('food-carousel');
-    container.innerHTML = foodData.map(food => `
-      <div class="snap-item trip-card overflow-hidden flex flex-col justify-between">
-        <div>
-          <div class="h-36 w-full overflow-hidden relative">
-            <img src="${food.img}" alt="${food.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x250/ef6c33/ffffff?text=Food'" />
-          </div>
-          <div class="p-4">
-            <h3 class="font-extrabold text-[15px] text-slate-800 leading-snug">${food.name}</h3>
-            <div class="flex flex-wrap gap-1.5 mt-1.5">
-              <span class="text-[11px] font-bold text-[#1a6bc4] bg-blue-50 px-2.5 py-0.5 rounded-md">${food.tag1}</span>
-              <span class="text-[11px] font-bold text-[#c85a28] bg-orange-50 px-2.5 py-0.5 rounded-md">${food.tag2}</span>
-            </div>
-            <p class="text-xs text-slate-500 mt-2 leading-relaxed line-clamp-3">
-              ${food.desc}
-            </p>
-          </div>
-        </div>
-        <div class="px-4 pb-4 pt-1 flex items-center gap-2">
-          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(food.query)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-[#1a6bc4] hover:bg-[#155a96] text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-sm transition">
-            📍 地圖
-          </a>
-          <button onclick="copyText('${food.mapcode}', '${food.name} 周邊停車 MapCode')" class="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold px-2.5 py-1.5 rounded-full transition">
-            🔢 ${food.mapcode}
-          </button>
-        </div>
-      </div>
-    `).join('');
-  }
-  renderFood();
-
-  // ================= 5. COMPLETE 21 MAPCODE DIRECTORY (From Slide 9) =================
-  const mapCodeDirectory = [
-    { day: 'D1', date: '11/25', name: '岡山桃太郎機場 (航廈)', mc: '275 312 741*88', tel: '086-294-5201' },
-    { day: 'D1', date: '11/25', name: '与島PA 休息站 (瀨戶大橋與島停車場)', mc: '391 758 817*58', tel: '0877-43-0226' },
-    { day: 'D1', date: '11/25-27', name: 'Route Inn 高松屋島 (ホテルルートイン高松屋島)', mc: '60 611 215*18', tel: '087-841-6511' },
-    { day: 'D1', date: '11/25', name: '高松中央商店街 / Donki (丸龜町營第4駐車場 P-4)', mc: '60 606 545*45', tel: '087-812-2620' },
-    { day: 'D1', date: '11/25', name: '高松中央商店街 / Donki (丸亀町壱番街駐車場)', mc: '60 636 193*37', tel: '依 MapCode 導航' },
-    { day: 'D2', date: '11/26', name: '大步危峽谷觀光遊覽船 / 餐廳 Mannaka (免費停車)', mc: '357 151 826*61', tel: '0883-84-1211' },
-    { day: 'D2', date: '11/26', name: '祖谷藤蔓橋 (かずら橋 夢舞台收費停車場 500円)', mc: '357 130 456*17', tel: '0883-87-2200' },
-    { day: 'D2', date: '11/26', name: '屋島展望台 (屋島山上收費停車場 300円)', mc: '60 672 588*14', tel: '087-841-9443' },
-    { day: 'D3', date: '11/27', name: '鳴門漩渦 うずしお汽船 (龜浦觀光港免費停車場)', mc: '406 211 595*12', tel: '088-687-0613' },
-    { day: 'D3', date: '11/27', name: '幸福鬆餅 淡路島度假村本店 (免費停車場)', mc: '339 044 141*18', tel: '0799-85-1111' },
-    { day: 'D3', date: '11/27', name: '兵庫縣立公園 あわじ花さじき (收費停車場 200円)', mc: '339 207 106*63', tel: '0799-74-6426' },
-    { day: 'D3', date: '11/27-29', name: '神戶燦路都雅致大飯店 (ホテルサンルートソプラ神戸)', mc: '12 369 459*62', tel: '078-222-7500' },
-    { day: 'D4', date: '11/28', name: '國寶 姬路城 (大手門駐車場 08:45前停妥)', mc: '24 308 004*56', tel: '079-284-1533' },
-    { day: 'D4', date: '11/28', name: '國寶 姬路城 (備用：北側 姬山駐車場)', mc: '24 308 178*06', tel: '備用停車場' },
-    { day: 'D4', date: '11/28', name: '神戶牛 Ishida. 生田新道店周邊① COIN PARK 生田新道', mc: '12 368 693*45', tel: '078-335-5922' },
-    { day: 'D4', date: '11/28', name: '神戶牛 Ishida. 生田新道店周邊② システムパーク下山手通2丁目', mc: '12 368 752*76', tel: '依 MapCode 導航' },
-    { day: 'D4', date: '11/28', name: '神戶牛 Ishida. 生田新道店周邊③ タイムズ下山手通２丁目', mc: '12 367 779*12', tel: '依 MapCode 導航' },
-    { day: 'D4', date: '11/28', name: '神戶三田 Premium Outlets (免費停車場 P3)', mc: '155 068 454*73', tel: '078-983-3300' },
-    { day: 'D5', date: '11/29', name: '吉備津彥神社 (備前國一宮・免費駐車場 100台)', mc: '275 013 898*17', tel: '086-284-0031' },
-    { day: 'D5', date: '11/29', name: '吉備津神社 (備中國・第一駐車場收費)', mc: '275 012 191*36', tel: '依 MapCode 導航' },
-    { day: 'D5', date: '11/29', name: 'ENEOS Dr.Driveセルフ岡山一宮店 (還車前加油)', mc: '275 075 466*63', tel: '依 MapCode 導航' },
-    { day: 'D5', date: '11/29', name: '岡山機場前 租車歸還區（豐田租車岡山 岡山機場店）', mc: '275 312 789*45', tel: '還車專用・勿輸航廈電話' }
-  ];
-
-  let currentMcFilter = 'ALL';
-
-  function filterMapCodes(dayFilter, btnEl) {
-    currentMcFilter = dayFilter;
-    document.querySelectorAll('.mc-filter-btn').forEach(b => {
-      b.className = 'mc-filter-btn bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-full shrink-0';
+  return wikiCache[t];
+}
+function hydratePhotos(){
+  document.querySelectorAll("[data-wiki]:not([data-done])").forEach(function(el){
+    el.setAttribute("data-done","1");
+    wikiImg(el.getAttribute("data-wiki")).then(function(u){
+      if(!u)return;
+      var im=new Image();
+      im.onload=function(){el.style.backgroundImage="url('"+u+"')";var s=el.querySelector("span");if(s)s.style.display="none"};
+      im.src=u;
     });
-    btnEl.className = 'mc-filter-btn bg-[#1a6bc4] text-white text-xs font-bold px-3 py-1.5 rounded-full shrink-0';
-    renderMapCodes();
+  });
+}
+var tt;
+function copyText(text,label){
+  function done(){
+    var t=$("toast");t.textContent="✅ 已複製 "+label+"："+text;t.style.opacity=1;
+    clearTimeout(tt);tt=setTimeout(function(){t.style.opacity=0},2400);
   }
-
-  function renderMapCodes() {
-    const query = (document.getElementById('mc-search').value || '').toLowerCase();
-    const listEl = document.getElementById('mapcode-list');
-
-    const filtered = mapCodeDirectory.filter(item => {
-      const matchDay = currentMcFilter === 'ALL' || item.day === currentMcFilter;
-      const matchQuery = item.name.toLowerCase().includes(query) || item.mc.includes(query) || item.date.includes(query);
-      return matchDay && matchQuery;
-    });
-
-    if (filtered.length === 0) {
-      listEl.innerHTML = `<div class="py-6 text-center text-xs text-slate-400">找不到符合的導航點</div>`;
-      return;
-    }
-
-    listEl.innerHTML = filtered.map(item => `
-      <div class="py-3 flex items-center justify-between gap-2">
-        <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-1.5">
-            <span class="text-[10px] font-bold bg-blue-50 text-[#1a6bc4] px-2 py-0.5 rounded">${item.date}</span>
-            <span class="text-xs font-extrabold text-slate-800 truncate">${item.name}</span>
-          </div>
-          <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-3">
-            <span>📞 ${item.tel}</span>
-          </div>
-        </div>
-        <button onclick="copyText('${item.mc}', '${item.name}')" class="shrink-0 bg-slate-100 hover:bg-blue-50 active:bg-blue-100 text-[#164e87] font-mono text-xs font-extrabold px-3 py-2 rounded-xl border border-slate-200/80 transition flex items-center gap-1">
-          <span>${item.mc}</span>
-          <span>📋</span>
-        </button>
-      </div>
-    `).join('');
+  function fb(){
+    var a=document.createElement("textarea");a.value=text;a.style.cssText="position:fixed;opacity:0";
+    document.body.appendChild(a);a.select();try{document.execCommand("copy")}catch(e){}
+    document.body.removeChild(a);done();
   }
-  renderMapCodes();
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(done,fb)}else{fb()}
+}
+function mcBtn(b,cls){return "<button onclick=\"copyText('"+b[1]+"','"+esc(b[0])+"')\" class='mc "+(cls||"bg-slate-100 text-[#164e87]")+" text-[11px] font-bold px-2.5 py-1 rounded-md mr-1.5 mt-1.5'>"+b[2]+" 📋</button>"}
 
-  // ================= 6. CHECKLIST (Saved to LocalStorage) =================
-  const defaultChecklist = [
-    { id: 'c1', text: '台灣駕照正本 ＋ 日文譯本（全體駕駛必帶！）' },
-    { id: 'c2', text: '護照正本（效期6個月以上）＆ Visit Japan Web QR Code' },
-    { id: 'c3', text: '取車時確認租借「一般計次扣款 ETC 卡」（跨海大橋46折）' },
-    { id: 'c4', text: '確認 11/28 (六) 13:30 神戶牛 Ishida. 生田新道店預約信' },
-    { id: 'c5', text: '11/28 登姬路城穿好穿脫的鞋子與厚襪子（入城需脫鞋）' },
-    { id: 'c6', text: '11/29 還車前於 ENEOS 岡山一宮店加滿油（Regular 紅槍）並留收據' }
-  ];
+// ============ 倒數 ============
+var target=new Date("2026-11-25T11:10:00+08:00").getTime();
+function tick(){
+  var d=target-Date.now(),el=$("cd");
+  if(d<=0){el.innerHTML="🎉 旅程進行中・旅途愉快！";return}
+  var p=function(n){return String(n).padStart(2,"0")};
+  el.innerHTML=Math.floor(d/864e5)+"天 "+p(Math.floor(d%864e5/36e5))+"小時 "+p(Math.floor(d%36e5/6e4))+"分 <span style='color:#ef6c33'>"+p(Math.floor(d%6e4/1e3))+"秒</span>";
+}
+setInterval(tick,1000);tick();
 
-  function loadChecklist() {
-    const saved = JSON.parse(localStorage.getItem('okayama_2026_checklist') || '{}');
-    const container = document.getElementById('checklist-container');
-    container.innerHTML = defaultChecklist.map(item => {
-      const checked = !!saved[item.id];
-      return `
-        <label class="flex items-start gap-2.5 p-2 rounded-xl bg-slate-50 hover:bg-slate-100/80 cursor-pointer transition">
-          <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleCheckItem('${item.id}', this.checked)" class="mt-0.5 w-4 h-4 accent-[#1a6bc4] rounded" />
-          <span class="text-xs ${checked ? 'line-through text-slate-400' : 'text-slate-700 font-medium'}">${item.text}</span>
-        </label>
-      `;
-    }).join('');
-  }
+// ============ 導覽列 ============
+(function(){
+  var items=[["✈️ 航班住宿","sec-flights"],["🌤️ 天氣","sec-weather"],["🚗 五日路線","sec-route"]];
+  DAYS_META.forEach(function(m){items.push([m.ic+" Day "+m.n,m.n])});
+  items.push(["📍 景點美食","sec-spots"],["🔢 MapCode","sec-mapcode"],["💼 提醒","sec-tips"]);
+  $("nav").innerHTML=items.map(function(it,i){
+    var js=typeof it[1]==="number"?"goDay("+it[1]+",this)":"goSec('"+it[1]+"',this)";
+    return "<button onclick=\""+js+"\" class='pill "+(i==0?"on":"")+" shrink-0 whitespace-nowrap text-xs font-bold px-3.5 py-2 rounded-full bg-white text-slate-700 border border-slate-200'>"+it[0]+"</button>";
+  }).join("");
+})();
+function setOn(b){document.querySelectorAll(".pill").forEach(function(x){x.classList.remove("on")});if(b)b.classList.add("on")}
+function goSec(id,b){setOn(b);var e=$(id);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
+function goDay(n,b){setOn(b);openDay(n,true);var e=$("day-card-"+n);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
 
-  function toggleCheckItem(id, isChecked) {
-    const saved = JSON.parse(localStorage.getItem('okayama_2026_checklist') || '{}');
-    saved[id] = isChecked;
-    localStorage.setItem('okayama_2026_checklist', JSON.stringify(saved));
-    loadChecklist();
-  }
+// ============ 天氣 ============
+function wxEmoji(c){if(c==null)return"🌤️";if(c===0)return"☀️";if(c<=2)return"🌤️";if(c<=48)return"⛅";if(c<=67)return"🌧️";if(c<=77)return"❄️";return"🌦️"}
+function renderWX(){
+  $("wx").innerHTML=WX.map(function(x){
+    return "<div class='flex flex-col items-center py-1 px-0.5'><div class='text-xs font-extrabold'>"+x.l+"</div><div class='text-[11px] text-slate-400 font-semibold'>"+x.w+"</div><div class='text-[10px] text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-bold mt-1 max-w-full truncate'>"+x.a+"</div><div class='text-2xl my-2'>"+x.i+"</div><div class='text-xs font-extrabold'>"+x.mn+"° <span class='text-slate-400 font-normal'>"+x.mx+"°</span></div><div class='text-[11px] font-semibold text-sky-600 mt-1'>💧"+x.r+"%</div></div>";
+  }).join("");
+}
+function loadWX(){
+  var ok=0;
+  Promise.all(WX.map(function(x){
+    var u="https://api.open-meteo.com/v1/forecast?latitude="+x.lat+"&longitude="+x.lon+"&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo&start_date="+x.d+"&end_date="+x.d;
+    return fetch(u).then(function(r){return r.json()}).then(function(j){
+      var q=j.daily;if(!q||q.temperature_2m_max[0]==null)return;
+      x.i=wxEmoji(q.weather_code[0]);x.mn=Math.round(q.temperature_2m_min[0]);x.mx=Math.round(q.temperature_2m_max[0]);
+      x.r=q.precipitation_probability_max[0]==null?x.r:q.precipitation_probability_max[0];ok++;
+    }).catch(function(){});
+  })).then(function(){
+    if(ok){renderWX();$("wx-note").textContent="✅ Open-Meteo 即時預報，每次開啟自動更新"}
+  });
+}
+renderWX();loadWX();
 
-  function resetChecklist() {
-    localStorage.removeItem('okayama_2026_checklist');
-    loadChecklist();
-  }
-  loadChecklist();
+// ============ 住宿 ============
+$("hotels").innerHTML=HOTELS.map(function(h,i){
+  return "<div class='card overflow-hidden'><div class='relative'>"+photo(h.wiki,h.nm.split(' ')[0],"h-40")+"<span class='absolute top-3 left-3 bg-slate-900/75 text-white text-xs font-bold px-3 py-1 rounded-full'>"+h.lb+"</span></div>"
+  +"<div class='p-4'><div class='flex justify-between mb-1.5'><span class='text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md'>"+h.bd+"</span><span class='text-xs font-semibold text-slate-500'>"+h.dt+"</span></div>"
+  +"<h3 class='font-extrabold'>"+h.nm+"</h3><p class='text-xs text-slate-500 mt-1'>"+h.ad+"</p>"
+  +"<div class='flex flex-wrap items-center gap-2 mt-3'><a target='_blank' rel='noopener' href='https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(h.q)+"' class='text-white text-xs font-bold px-3.5 py-1.5 rounded-full' style='background:#1a6bc4'>📍 地圖</a>"
+  +"<button onclick=\"copyText('"+h.mc+"','"+esc(h.nm)+" MapCode')\" class='mc bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-full'>🔢 "+h.mc+" 📋</button></div>"
+  +"<div class='mt-3 pt-2.5 border-t border-slate-100'><button onclick=\"var e=$('hd"+i+"');e.classList.toggle('hidden')\" class='w-full flex justify-between text-xs font-bold text-blue-700 py-1'><span>"+h.dtt+"</span><span>▸</span></button>"
+  +"<div id='hd"+i+"' class='hidden mt-2 bg-slate-50 rounded-xl p-3 text-xs text-slate-600 leading-relaxed'>"+h.dl+"</div></div></div></div>";
+}).join("");
 
-  // ================= 7. ACCORDION & UI INTERACTIONS =================
-  function toggleDay(dayNum) {
-    const body = document.getElementById(`day-body-${dayNum}`);
-    const arrow = document.getElementById(`day-arrow-${dayNum}`);
-    const isHidden = body.classList.contains('hidden');
-    if (isHidden) {
-      body.classList.remove('hidden');
-      arrow.classList.add('rotate-90');
-    } else {
-      body.classList.add('hidden');
-      arrow.classList.remove('rotate-90');
-    }
-  }
+// ============ 路線 ============
+$("route").innerHTML=DAYS_META.map(function(m){
+  var c={b:"bg-blue-50 text-blue-700",t:"bg-teal-50 text-teal-700",s:"bg-slate-100 text-slate-700"}[m.tc];
+  return "<div class='py-2.5 flex justify-between gap-2 cursor-pointer' onclick='goDay("+m.n+",null)'><div><span class='font-extrabold' style='color:"+m.col+"'>"+m.ttl.split(" ")[0]+"</span> <span class='font-bold'>"+m.rs+"</span><p class='text-slate-500 text-[11px] mt-0.5'>"+m.rd+"</p></div><span class='shrink-0 text-[10px] font-bold px-2 py-0.5 rounded h-fit "+c+"'>"+m.tag+"</span></div>";
+}).join("");
 
-  let allExpanded = false;
-  function expandAllDays() {
-    allExpanded = !allExpanded;
-    for (let i = 1; i <= 5; i++) {
-      const body = document.getElementById(`day-body-${i}`);
-      const arrow = document.getElementById(`day-arrow-${i}`);
-      if (allExpanded) {
-        body.classList.remove('hidden');
-        arrow.classList.add('rotate-90');
-      } else {
-        body.classList.add('hidden');
-        arrow.classList.remove('rotate-90');
-      }
-    }
-    document.getElementById('expand-all-btn').textContent = allExpanded ? '收合全部' : '展開全部';
-  }
+// ============ 每日行程 ============
+function tlHTML(items){
+  return "<div class='tl space-y-5'>"+items.map(function(it){
+    return "<div class='relative flex items-start gap-3'><div class='mc w-[56px] text-right font-bold text-xs text-slate-600 pt-1 shrink-0'>"+it[0]+"</div><div class='w-3.5 h-3.5 rounded-full mt-1 shrink-0 relative' style='background:"+it[1]+";box-shadow:0 0 0 4px #fff'></div><div class='flex-1 min-w-0'><div class='font-extrabold text-sm'>"+it[2]+"</div><div class='text-xs text-slate-600 mt-0.5 leading-relaxed'>"+it[3]+"</div><div>"+it[4].map(function(b){return mcBtn(b)}).join("")+"</div></div></div>";
+  }).join("")+"</div>";
+}
+$("days").innerHTML=DAYS_META.map(function(m){
+  var body;
+  if(m.n===3){
+    body="<div class='bg-slate-100 p-1 rounded-xl flex gap-1 mb-4'><button id='bpA' onclick=\"plan('A')\" class='flex-1 py-2 px-2 rounded-lg text-xs font-extrabold text-white' style='background:#1a6bc4'>🌟 首推方案A：早班◎09:00</button><button id='bpB' onclick=\"plan('B')\" class='flex-1 py-2 px-2 rounded-lg text-xs font-extrabold text-slate-600'>😴 方案B：睡飽搭◎12:30</button></div><div id='pA'>"+tlHTML(DAY_ITEMS["3A"])+"</div><div id='pB' class='hidden'>"+tlHTML(DAY_ITEMS["3B"])+"</div>";
+  }else body=tlHTML(DAY_ITEMS[m.n]);
+  return "<div id='day-card-"+m.n+"' class='card overflow-hidden' style='scroll-margin-top:64px'><button onclick='toggleDay("+m.n+")' class='w-full p-4 flex items-center justify-between text-left'><span class='font-extrabold text-[15px]'>"+m.ic+" "+m.ttl+"</span><span id='ar"+m.n+"' class='text-blue-700 font-bold text-sm' style='transition:transform .2s'>▸</span></button>"
+  +"<div id='db"+m.n+"' class='hidden px-4 pb-5 pt-3 border-t border-slate-100'><div class='relative mb-4 rounded-xl overflow-hidden'>"+photo(m.wiki,m.cap,"h-40")+"<span class='absolute bottom-2 left-3 text-white text-xs font-extrabold' style='text-shadow:0 1px 4px #000'>"+m.cap+"</span></div>"+body+"</div></div>";
+}).join("");
+function openDay(n,force){
+  var b=$("db"+n),a=$("ar"+n),h=b.classList.contains("hidden");
+  if(force&&!h)return;
+  b.classList.toggle("hidden",!h);a.style.transform=h?"rotate(90deg)":"";
+  syncAll();
+}
+function toggleDay(n){openDay(n,false)}
+var allOpen=false;
+function syncAll(){
+  var c=0;for(var i=1;i<=5;i++)if(!$("db"+i).classList.contains("hidden"))c++;
+  allOpen=c===5;$("expbtn").textContent=allOpen?"全部收合":"全部展開";
+}
+function toggleAll(){
+  var open=!allOpen;
+  for(var i=1;i<=5;i++){$("db"+i).classList.toggle("hidden",!open);$("ar"+i).style.transform=open?"rotate(90deg)":""}
+  syncAll();
+}
+function plan(p){
+  $("pA").classList.toggle("hidden",p!=="A");$("pB").classList.toggle("hidden",p!=="B");
+  var on="flex-1 py-2 px-2 rounded-lg text-xs font-extrabold text-white",off="flex-1 py-2 px-2 rounded-lg text-xs font-extrabold text-slate-600";
+  $("bpA").className=p==="A"?on:off;$("bpB").className=p==="B"?on:off;
+  $("bpA").style.background=p==="A"?"#1a6bc4":"";$("bpB").style.background=p==="B"?"#1a6bc4":"";
+}
+openDay(1,true);
 
-  function switchDay3Plan(plan) {
-    const planA = document.getElementById('day3-plan-a');
-    const planB = document.getElementById('day3-plan-b');
-    const btnA = document.getElementById('btn-plan-a');
-    const btnB = document.getElementById('btn-plan-b');
+// ============ 景點 / 美食 ============
+$("spots").innerHTML=SPOTS.map(function(s){
+  return "<div class='card overflow-hidden flex flex-col justify-between'><div>"+photo(s[4],s[0])+"<div class='p-4'><h3 class='font-extrabold text-[15px] leading-snug'>"+s[0]+"</h3><span class='inline-block mt-1.5 text-[11px] font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md'>"+s[1]+"</span><p class='text-xs text-slate-500 mt-2 leading-relaxed'>"+s[2]+"</p></div></div>"
+  +"<div class='px-4 pb-4 pt-1 flex items-center gap-2 flex-wrap'><a target='_blank' rel='noopener' href='https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(s[5])+"' class='text-white text-xs font-bold px-3.5 py-1.5 rounded-full' style='background:#1a6bc4'>📍 地圖</a><button onclick=\"copyText('"+s[3]+"','"+esc(s[0])+" MapCode')\" class='mc bg-slate-100 text-slate-700 text-[11px] font-bold px-2.5 py-1.5 rounded-full'>🔢 "+s[3]+"</button></div></div>";
+}).join("");
+$("food").innerHTML=FOOD.map(function(f){
+  return "<div class='card overflow-hidden flex flex-col justify-between'><div>"+photo(f[5],f[0])+"<div class='p-4'><h3 class='font-extrabold text-[15px] leading-snug'>"+f[0]+"</h3><div class='flex flex-wrap gap-1.5 mt-1.5'><span class='text-[11px] font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md'>"+f[1]+"</span><span class='text-[11px] font-bold text-orange-700 bg-orange-50 px-2.5 py-0.5 rounded-md'>"+f[2]+"</span></div><p class='text-xs text-slate-500 mt-2 leading-relaxed'>"+f[3]+"</p></div></div>"
+  +"<div class='px-4 pb-4 pt-1 flex items-center gap-2 flex-wrap'><a target='_blank' rel='noopener' href='https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(f[6])+"' class='text-white text-xs font-bold px-3.5 py-1.5 rounded-full' style='background:#1a6bc4'>📍 地圖</a><button onclick=\"copyText('"+f[4]+"','"+esc(f[0])+" MapCode')\" class='mc bg-slate-100 text-slate-700 text-[11px] font-bold px-2.5 py-1.5 rounded-full'>🔢 "+f[4]+"</button></div></div>";
+}).join("");
 
-    if (plan === 'A') {
-      planA.classList.remove('hidden');
-      planB.classList.add('hidden');
-      btnA.className = 'flex-1 py-2 px-2 rounded-lg text-xs font-extrabold bg-[#1a6bc4] text-white shadow-sm transition';
-      btnB.className = 'flex-1 py-2 px-2 rounded-lg text-xs font-extrabold text-slate-600 hover:bg-white/60 transition';
-    } else {
-      planA.classList.add('hidden');
-      planB.classList.remove('hidden');
-      btnB.className = 'flex-1 py-2 px-2 rounded-lg text-xs font-extrabold bg-[#1a6bc4] text-white shadow-sm transition';
-      btnA.className = 'flex-1 py-2 px-2 rounded-lg text-xs font-extrabold text-slate-600 hover:bg-white/60 transition';
-    }
-  }
+// ============ MapCode 速查 ============
+var mcFilter="ALL";
+$("mcf").innerHTML=[["ALL","全部 ("+MCDIR.length+")"],["D1","Day 1"],["D2","Day 2"],["D3","Day 3"],["D4","Day 4"],["D5","Day 5"]].map(function(f,i){
+  return "<button onclick=\"setMC('"+f[0]+"',this)\" class='mcb "+(i==0?"text-white":"bg-slate-100 text-slate-600")+" text-xs font-bold px-3 py-1.5 rounded-full shrink-0' "+(i==0?"style='background:#1a6bc4'":"")+">"+f[1]+"</button>";
+}).join("");
+function setMC(f,b){
+  mcFilter=f;
+  document.querySelectorAll(".mcb").forEach(function(x){x.className="mcb bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-full shrink-0";x.style.background=""});
+  b.className="mcb text-white text-xs font-bold px-3 py-1.5 rounded-full shrink-0";b.style.background="#1a6bc4";
+  renderMC();
+}
+function renderMC(){
+  var q=($("mcs").value||"").toLowerCase();
+  var r=MCDIR.filter(function(i){return(mcFilter==="ALL"||i[0]===mcFilter)&&(i[2].toLowerCase().indexOf(q)>-1||i[3].indexOf(q)>-1||i[1].indexOf(q)>-1)});
+  $("mcl").innerHTML=r.length?r.map(function(i){
+    return "<div onclick=\"copyText('"+i[3]+"','"+esc(i[2])+"')\" class='py-3 flex items-center justify-between gap-2 cursor-pointer'><div class='min-w-0 flex-1'><div class='flex items-center gap-1.5'><span class='text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded shrink-0'>"+i[1]+"</span><span class='text-xs font-extrabold'>"+i[2]+"</span></div><div class='text-[11px] text-slate-400 mt-0.5'>📞 "+i[4]+"</div></div><span class='mc shrink-0 bg-slate-100 text-[#164e87] text-xs font-extrabold px-3 py-2 rounded-xl border border-slate-200'>"+i[3]+" 📋</span></div>";
+  }).join(""):"<div class='py-6 text-center text-xs text-slate-400'>找不到符合的導航點</div>";
+}
+renderMC();
 
-  function toggleHotelDetail(detailId, arrowId) {
-    const detail = document.getElementById(detailId);
-    const arrow = document.getElementById(arrowId);
-    detail.classList.toggle('hidden');
-    arrow.classList.toggle('rotate-90');
-  }
+// ============ 清單 / 換算 ============
+function getCL(){try{return JSON.parse(localStorage.getItem("okayama_2026_checklist")||"{}")}catch(e){return window._cl||{}}}
+function setCL(o){window._cl=o;try{localStorage.setItem("okayama_2026_checklist",JSON.stringify(o))}catch(e){}}
+function renderCL(){
+  var s=getCL();
+  $("cl").innerHTML=CHECK.map(function(c){
+    var k=!!s[c[0]];
+    return "<label class='flex items-start gap-2.5 p-2 rounded-xl bg-slate-50 cursor-pointer'><input type='checkbox' "+(k?"checked":"")+" onchange=\"tgl('"+c[0]+"',this.checked)\" class='mt-0.5 w-4 h-4' style='accent-color:#1a6bc4'><span class='text-xs "+(k?"line-through text-slate-400":"text-slate-700 font-medium")+"'>"+c[1]+"</span></label>";
+  }).join("");
+}
+function tgl(id,v){var s=getCL();s[id]=v;setCL(s);renderCL()}
+function resetCL(){setCL({});renderCL()}
+renderCL();
+function conv(){var v=parseFloat($("jpy").value)||0;$("twd").textContent="NT$ "+Math.round(v*0.215).toLocaleString()}
 
-  function toggleTipsDrawer() {
-    const body = document.getElementById('tips-drawer-body');
-    const arrow = document.getElementById('tips-arrow');
-    body.classList.toggle('hidden');
-    arrow.classList.toggle('rotate-90');
-  }
-
-  function scrollToSection(secId, btnEl) {
-    document.querySelectorAll('.nav-pill').forEach(btn => btn.classList.remove('active'));
-    if (btnEl) btnEl.classList.add('active');
-    const target = document.getElementById(secId);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }
-
-  function openAndScrollDay(dayNum, btnEl) {
-    document.querySelectorAll('.nav-pill').forEach(btn => btn.classList.remove('active'));
-    if (btnEl) btnEl.classList.add('active');
-    const body = document.getElementById(`day-body-${dayNum}`);
-    const arrow = document.getElementById(`day-arrow-${dayNum}`);
-    if (body && body.classList.contains('hidden')) {
-      body.classList.remove('hidden');
-      arrow.classList.add('rotate-90');
-    }
-    const card = document.getElementById(`day-card-${dayNum}`);
-    if (card) {
-      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }
-
-  // Copy MapCode helper (iFrame safe using execCommand fallback)
-  let toastTimer = null;
-  function copyText(text, label) {
-    const tempInput = document.createElement('textarea');
-    tempInput.value = text;
-    document.body.appendChild(tempInput);
-    tempInput.select();
-    document.execCommand('copy');
-    document.body.removeChild(tempInput);
-
-    const toast = document.getElementById('toast');
-    const toastMsg = document.getElementById('toast-msg');
-    toastMsg.textContent = `已複製 ${label}：${text}`;
-    toast.classList.remove('opacity-0');
-    toast.classList.add('opacity-100');
-
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-      toast.classList.remove('opacity-100');
-      toast.classList.add('opacity-0');
-    }, 2400);
-  }
+hydratePhotos();
 </script>
 </body>
 </html>
