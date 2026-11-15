@@ -7,7 +7,8 @@
   <meta name="apple-mobile-web-app-title" content="岡山四國自駕" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <link id="apple-touch-icon-link" rel="apple-touch-icon" sizes="180x180" />
+  <!-- Static SVG Data URI fallback + Dynamic 180x180 Canvas PNG for iOS Home Screen Icon -->
+  <link id="apple-touch-icon-link" rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23ffffff'/%3E%3Cpath d='M90 163 C42 163 22 126 22 86 C22 44 54 22 76 22 C83 22 88 26 90 31 C92 26 97 22 104 22 C126 22 158 44 158 86 C158 126 138 163 90 163 Z' fill='%23fdebe0'/%3E%3Cpath d='M90 31 C86 24 78 21 69 22 C43 25 18 50 18 86 C18 95 21 99 28 99 L63 99 C68 99 71 95 73 89 C77 77 83 70 87 73 C89 75 90 77 90 77 C90 77 91 75 93 73 C97 70 103 77 107 89 C109 95 112 99 117 99 L152 99 C159 99 162 95 162 86 C162 50 137 25 111 22 C102 21 94 24 90 31 Z' fill='%2375634f'/%3E%3Cpath d='M84 37 C86 15 116 7 151 24 C128 38 103 42 84 37 Z' fill='%2379b858'/%3E%3Cpath d='M88 35 C106 25 126 21 146 24' fill='none' stroke='%231c8542' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M90 95 C84 95 79 90 79 83 C79 76 86 70 90 66 C94 70 101 76 101 83 C101 90 96 95 90 95 Z' fill='%23f28bb2'/%3E%3Cpath d='M88 94 C79 98 73 96 71 92 C76 89 83 90 88 94 Z' fill='%2379b858'/%3E%3Cpath d='M92 94 C101 98 107 96 109 92 C104 89 97 90 92 94 Z' fill='%2379b858'/%3E%3Cellipse cx='58' cy='117' rx='7.5' ry='12' fill='%2375634f'/%3E%3Cellipse cx='122' cy='117' rx='7.5' ry='12' fill='%2375634f'/%3E%3Cpath d='M75 137 C77 148 103 148 105 137' fill='none' stroke='%2375634f' stroke-width='5.5' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link id="favicon-link" rel="icon" type="image/png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1221,7 +1222,7 @@
 </div>
 
 <script>
-  // ================= 0. GENERATE MOMOTARO (桃太郎) APP ICON =================
+  // ================= 0. GENERATE MOMOTARO (桃太郎) APP ICON (Matching Reference Illustration) =================
   (function generateMomotaroAppIcon() {
     try {
       const size = 180;
@@ -1231,123 +1232,156 @@
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // 1. Background: Seto Inland Sea Blue-to-Sky Gradient
-      const bgGrad = ctx.createLinearGradient(0, 0, 0, size);
-      bgGrad.addColorStop(0, '#1a6bc4');
-      bgGrad.addColorStop(0.65, '#3b8ee6');
-      bgGrad.addColorStop(1, '#e8f3ff');
-      ctx.fillStyle = bgGrad;
+      const hairBrown = '#75634F';
+      const skinPeach = '#FDEBE0';
+      const leafGreen = '#79B858';
+      const leafVein = '#1C8542';
+      const miniPeachPink = '#F28BB2';
+
+      // 1. Clean Solid White Background (#FFFFFF) so iOS never renders black corners
+      ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(0, 0, size, size);
 
-      // Decorative subtle golden sun glow behind peach
-      const sunGrad = ctx.createRadialGradient(90, 96, 15, 90, 96, 78);
-      sunGrad.addColorStop(0, 'rgba(255, 248, 220, 0.85)');
-      sunGrad.addColorStop(1, 'rgba(255, 248, 220, 0)');
-      ctx.fillStyle = sunGrad;
+      // 2. Lower Face Base (Soft warm peach skin #FDEBE0)
+      ctx.fillStyle = skinPeach;
       ctx.beginPath();
-      ctx.arc(90, 96, 78, 0, Math.PI * 2);
-      ctx.fill();
-
-      // 2. Green Leaves at bottom of Peach
-      ctx.save();
-      ctx.fillStyle = '#2e9e5b';
-      ctx.beginPath();
-      ctx.ellipse(54, 134, 26, 13, -0.45, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.ellipse(126, 134, 26, 13, 0.45, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-
-      // 3. Cute Plump White-Pink Okayama Peach (白桃)
-      const peachGrad = ctx.createRadialGradient(78, 82, 12, 90, 102, 66);
-      peachGrad.addColorStop(0, '#fff7f8');
-      peachGrad.addColorStop(0.55, '#ffc2d1');
-      peachGrad.addColorStop(1, '#ff7597');
-
-      ctx.fillStyle = peachGrad;
-      ctx.beginPath();
-      ctx.moveTo(90, 42); // Top pointed tip of peach
-      ctx.bezierCurveTo(132, 54, 148, 96, 132, 130);
-      ctx.bezierCurveTo(118, 152, 98, 152, 90, 147);
-      ctx.bezierCurveTo(82, 152, 62, 152, 48, 130);
-      ctx.bezierCurveTo(32, 96, 48, 54, 90, 42);
+      ctx.moveTo(22, 86);
+      ctx.bezierCurveTo(22, 134, 48, 163, 90, 163);
+      ctx.bezierCurveTo(132, 163, 158, 134, 158, 86);
+      ctx.lineTo(158, 65);
+      ctx.lineTo(22, 65);
       ctx.closePath();
       ctx.fill();
 
-      // Soft peach cleft line
-      ctx.strokeStyle = 'rgba(225, 75, 115, 0.35)';
+      // 3. White Arched Forehead / Headband Cutout Area (#FFFFFF)
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.moveTo(62, 100);
+      ctx.bezierCurveTo(68, 72, 82, 62, 90, 69);
+      ctx.bezierCurveTo(98, 62, 112, 72, 118, 100);
+      ctx.closePath();
+      ctx.fill();
+
+      // 4. Peach-Shaped Dark Warm Brown Hair (#75634F)
+      ctx.fillStyle = hairBrown;
+      ctx.beginPath();
+      // Top center cleft of peach-shaped hair
+      ctx.moveTo(90, 31);
+      // Left lobe outer curve down to rounded left bang tip
+      ctx.bezierCurveTo(83, 21, 66, 20, 49, 29);
+      ctx.bezierCurveTo(28, 41, 18, 65, 18, 88);
+      ctx.bezierCurveTo(18, 96, 22, 99, 29, 99);
+      // Flat bottom of left bang
+      ctx.lineTo(62, 99);
+      ctx.bezierCurveTo(66, 99, 68, 96, 70, 91);
+      // Inner arch framing the white forehead
+      ctx.bezierCurveTo(75, 74, 84, 67, 90, 72);
+      ctx.bezierCurveTo(96, 67, 105, 74, 110, 91);
+      ctx.bezierCurveTo(112, 96, 114, 99, 118, 99);
+      // Flat bottom of right bang
+      ctx.lineTo(151, 99);
+      ctx.bezierCurveTo(158, 99, 162, 96, 162, 88);
+      // Right lobe outer curve up to top center cleft
+      ctx.bezierCurveTo(162, 65, 152, 41, 131, 29);
+      ctx.bezierCurveTo(114, 20, 97, 21, 90, 31);
+      ctx.closePath();
+      ctx.fill();
+
+      // 5. Top-Right Green Peach Leaf (#79B858) with Dark Green Vein (#1C8542)
+      ctx.save();
+      ctx.fillStyle = leafGreen;
+      ctx.beginPath();
+      ctx.moveTo(83, 37);
+      ctx.bezierCurveTo(85, 14, 117, 6, 152, 24);
+      ctx.bezierCurveTo(129, 39, 103, 43, 83, 37);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = leafVein;
       ctx.lineWidth = 3;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(90, 52);
-      ctx.quadraticCurveTo(82, 98, 90, 142);
+      ctx.moveTo(87, 35);
+      ctx.quadraticCurveTo(114, 22, 146, 24);
       ctx.stroke();
+      ctx.restore();
 
-      // 4. Momotaro Hachimaki Headband (白底日本武士頭帶鉢卷)
-      ctx.fillStyle = '#ffffff';
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.lineWidth = 2;
+      // 6. Forehead Pink Peach Emblem (#F28BB2) & Two Symmetrical Green Leaves (#79B858)
+      // Left small leaf
+      ctx.fillStyle = leafGreen;
       ctx.beginPath();
-      ctx.roundRect(38, 76, 104, 24, 12);
-      ctx.fill();
-      ctx.stroke();
-
-      // Center Gold Emblem Circle with "桃" Kanji
-      ctx.fillStyle = '#ef6c33';
-      ctx.beginPath();
-      ctx.arc(90, 88, 17, 0, Math.PI * 2);
+      ctx.moveTo(89, 94);
+      ctx.bezierCurveTo(81, 99, 73, 97, 70, 92);
+      ctx.bezierCurveTo(76, 88, 84, 90, 89, 94);
+      ctx.closePath();
       ctx.fill();
 
-      ctx.strokeStyle = '#ffd166';
-      ctx.lineWidth = 2.5;
+      // Right small leaf
       ctx.beginPath();
-      ctx.arc(90, 88, 15, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '900 18px "Noto Sans TC", "Hiragino Sans", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('桃', 90, 89);
-
-      // 5. Cute Smiling Momotaro Eyes & Rosy Cheeks
-      ctx.fillStyle = '#1e293b';
-      ctx.beginPath();
-      ctx.arc(71, 114, 4.2, 0, Math.PI * 2);
-      ctx.arc(109, 114, 4.2, 0, Math.PI * 2);
+      ctx.moveTo(91, 94);
+      ctx.bezierCurveTo(99, 99, 107, 97, 110, 92);
+      ctx.bezierCurveTo(104, 88, 96, 90, 91, 94);
+      ctx.closePath();
       ctx.fill();
 
-      // Eye highlights
-      ctx.fillStyle = '#ffffff';
+      // Center pink peach
+      ctx.fillStyle = miniPeachPink;
       ctx.beginPath();
-      ctx.arc(69.5, 112.5, 1.5, 0, Math.PI * 2);
-      ctx.arc(107.5, 112.5, 1.5, 0, Math.PI * 2);
+      ctx.moveTo(90, 66);
+      ctx.bezierCurveTo(97, 71, 102, 78, 101, 85);
+      ctx.bezierCurveTo(100, 92, 94, 95, 90, 94);
+      ctx.bezierCurveTo(86, 95, 80, 92, 79, 85);
+      ctx.bezierCurveTo(78, 78, 83, 71, 90, 66);
+      ctx.closePath();
       ctx.fill();
 
-      // Rosy cheeks
-      ctx.fillStyle = 'rgba(255, 92, 138, 0.45)';
-      ctx.beginPath();
-      ctx.ellipse(60, 122, 7, 4.5, 0, 0, Math.PI * 2);
-      ctx.ellipse(120, 122, 7, 4.5, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Cute smile
-      ctx.strokeStyle = '#1e293b';
-      ctx.lineWidth = 2.8;
+      // Subtle peach cleft highlight
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+      ctx.lineWidth = 1.4;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.arc(90, 118, 8, 0.2 * Math.PI, 0.8 * Math.PI);
+      ctx.moveTo(90, 70);
+      ctx.quadraticCurveTo(88, 81, 90, 92);
       ctx.stroke();
 
-      // Apply generated PNG to apple-touch-icon & favicon
+      // 7. Soft Pink Blush Cheeks (Radial Gradient #F7A8C4 to transparent)
+      const drawBlush = (cx, cy) => {
+        const blushGrad = ctx.createRadialGradient(cx, cy, 2, cx, cy, 17);
+        blushGrad.addColorStop(0, 'rgba(247, 168, 196, 0.72)');
+        blushGrad.addColorStop(0.6, 'rgba(247, 168, 196, 0.28)');
+        blushGrad.addColorStop(1, 'rgba(247, 168, 196, 0)');
+        ctx.fillStyle = blushGrad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 17, 0, Math.PI * 2);
+        ctx.fill();
+      };
+      drawBlush(47, 130);
+      drawBlush(133, 130);
+
+      // 8. Oval Dark Warm Brown Eyes (#75634F)
+      ctx.fillStyle = hairBrown;
+      ctx.beginPath();
+      ctx.ellipse(58, 117, 7.5, 12, 0, 0, Math.PI * 2);
+      ctx.ellipse(122, 117, 7.5, 12, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 9. Rounded Smiling Mouth Arc (#75634F with round lineCap)
+      ctx.strokeStyle = hairBrown;
+      ctx.lineWidth = 5.5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(74, 137);
+      ctx.bezierCurveTo(77, 149, 103, 149, 106, 137);
+      ctx.stroke();
+
+      // Apply generated 180x180 PNG to apple-touch-icon & favicon
       const iconDataUrl = canvas.toDataURL('image/png');
       const appleIcon = document.getElementById('apple-touch-icon-link');
       const favIcon = document.getElementById('favicon-link');
       if (appleIcon) appleIcon.href = iconDataUrl;
       if (favIcon) favIcon.href = iconDataUrl;
     } catch (e) {
-      // Fallback silently if canvas blocked
+      // Keeps static SVG fallback if canvas is restricted
     }
   })();
 
