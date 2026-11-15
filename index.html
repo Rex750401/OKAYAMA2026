@@ -87,10 +87,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","
   </div>
   <div class="card p-3">
     <div id="wx" class="grid grid-cols-5 text-center divide-x divide-slate-100"></div>
-    <div class="mt-3 pt-2 border-t border-slate-100 text-[11px] text-slate-500 flex flex-wrap justify-between gap-2">
-      <span id="wx-note">預設參考值（連線後自動更新為 Open-Meteo 即時預報）</span>
-      <span class="text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full font-semibold">⛰️ 祖谷山區偏涼，建議洋蔥式穿搭</span>
+  </div>
+</section>
+
+<section id="sec-leaf" class="px-5 sec">
+  <h2 class="text-xl font-extrabold mb-3" style="color:var(--navy)">🍁 沿途楓葉狀況</h2>
+  <div class="card p-4"><div id="leaf" class="space-y-2.5 text-xs"></div></div>
+</section>
+
+<section id="sec-uzu" class="px-5 sec">
+  <h2 class="text-xl font-extrabold mb-3" style="color:var(--navy)">🌀 11/27 鳴門漩渦時間對照</h2>
+  <div class="card p-4 text-xs space-y-3">
+    <div class="grid grid-cols-2 gap-2 text-center">
+      <div class="bg-sky-50 border border-sky-200 rounded-xl p-2.5"><div class="text-[10px] font-bold text-sky-700">北流最速</div><div class="mc text-xl font-extrabold" style="color:var(--navy)">07:30</div></div>
+      <div class="bg-sky-50 border border-sky-200 rounded-xl p-2.5"><div class="text-[10px] font-bold text-sky-700">南流最速</div><div class="mc text-xl font-extrabold" style="color:var(--navy)">14:10</div></div>
     </div>
+    <div id="uzubar"></div>
+    <table class="w-full text-[11px]"><tbody id="uzutb" class="divide-y divide-slate-100"></tbody></table>
   </div>
 </section>
 
@@ -379,7 +392,7 @@ setInterval(tick,1000);tick();
 
 // ============ 導覽列 ============
 (function(){
-  var items=[["✈️ 航班住宿","sec-flights"],["🌤️ 天氣","sec-weather"],["🚗 五日路線","sec-route"]];
+  var items=[["✈️ 航班住宿","sec-flights"],["🌤️ 天氣","sec-weather"],["🍁 楓葉","sec-leaf"],["🌀 漩渦","sec-uzu"],["🚗 五日路線","sec-route"]];
   DAYS_META.forEach(function(m){items.push([m.ic+" Day "+m.n,m.n])});
   items.push(["📍 景點美食","sec-spots"],["🔢 MapCode","sec-mapcode"],["💼 提醒","sec-tips"]);
   $("nav").innerHTML=items.map(function(it,i){
@@ -395,7 +408,7 @@ function goDay(n,b){setOn(b);openDay(n,true);var e=$("day-card-"+n);if(e)e.scrol
 function wxEmoji(c){if(c==null)return"🌤️";if(c===0)return"☀️";if(c<=2)return"🌤️";if(c<=48)return"⛅";if(c<=67)return"🌧️";if(c<=77)return"❄️";return"🌦️"}
 function renderWX(){
   $("wx").innerHTML=WX.map(function(x){
-    return "<div class='flex flex-col items-center py-1 px-0.5'><div class='text-xs font-extrabold'>"+x.l+"</div><div class='text-[11px] text-slate-400 font-semibold'>"+x.w+"</div><div class='text-[10px] text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-bold mt-1 max-w-full truncate'>"+x.a+"</div><div class='text-2xl my-2'>"+x.i+"</div><div class='text-xs font-extrabold'>"+x.mn+"° <span class='text-slate-400 font-normal'>"+x.mx+"°</span></div><div class='text-[11px] font-semibold text-sky-600 mt-1'>💧"+x.r+"%</div></div>";
+    return "<div class='flex flex-col items-center py-1 px-0.5'><div class='text-xs font-extrabold'>"+x.l+"</div><div class='text-[11px] text-slate-400 font-semibold'>"+x.w+"</div><div class='text-[10px] text-blue-700 bg-blue-50 px-1 py-0.5 rounded font-bold mt-1 leading-tight text-center'>"+x.a.replace('・','<br>')+"</div><div class='text-2xl my-2'>"+x.i+"</div><div class='text-xs font-extrabold'>"+x.mn+"° <span class='text-slate-400 font-normal'>"+x.mx+"°</span></div><div class='text-[11px] font-semibold text-sky-600 mt-1'>💧"+x.r+"%</div></div>";
   }).join("");
 }
 function loadWX(){
@@ -408,7 +421,7 @@ function loadWX(){
       x.r=q.precipitation_probability_max[0]==null?x.r:q.precipitation_probability_max[0];ok++;
     }).catch(function(){});
   })).then(function(){
-    if(ok){renderWX();$("wx-note").textContent="✅ Open-Meteo 即時預報，每次開啟自動更新"}
+    if(ok)renderWX();
   });
 }
 renderWX();loadWX();
@@ -513,6 +526,49 @@ function tgl(id,v){var s=getCL();s[id]=v;setCL(s);renderCL()}
 function resetCL(){setCL({});renderCL()}
 renderCL();
 function conv(){var v=parseFloat($("jpy").value)||0;$("twd").textContent="NT$ "+Math.round(v*0.215).toLocaleString()}
+
+
+// ============ 楓葉狀況 ============
+var LEAF=[
+ ["屋島","D2 11/26","g","見頃初期","見頃 11/23 頃～"],
+ ["大歩危峽谷","D2 11/26","g","見頃前後","見頃 11/22 頃～"],
+ ["祖谷藤蔓橋","D2 11/26","y","不確定，可能偏尾聲","例年 11月上旬～中旬"],
+ ["姬路城","D4 11/28","g","見頃初期","見頃 11/23～"],
+ ["吉備津彥神社／吉備津神社","D5 11/29","n","查無資料",""]
+];
+(function(){
+  var dot={g:"🟢",y:"🟡",n:"⚪"},bg={g:"bg-emerald-50 text-emerald-800",y:"bg-amber-50 text-amber-800",n:"bg-slate-100 text-slate-600"};
+  $("leaf").innerHTML=LEAF.map(function(l){
+    return "<div class='border border-slate-200 rounded-xl p-3'><div class='flex justify-between items-start gap-2'><div><div class='font-extrabold text-[13px]'>"+l[0]+"</div><div class='text-[11px] text-slate-400'>"+l[1]+"</div></div><span class='shrink-0 text-[10px] font-bold px-2 py-0.5 rounded "+bg[l[2]]+"'>"+dot[l[2]]+" "+l[3]+"</span></div><p class='text-slate-600 mt-1.5'>"+l[4]+"</p></div>";
+  }).join("");
+})();
+
+// ============ 鳴門漩渦時間對照 ============
+(function(){
+  var T0=360,T1=1020,W=T1-T0; // 06:00–17:00
+  function pc(m){return Math.max(0,Math.min(100,(m-T0)/W*100))}
+  function m(h,mi){return h*60+(mi||0)}
+  function bar(a,b,col,top,h){return "<div style='position:absolute;left:"+pc(a)+"%;width:"+(pc(b)-pc(a))+"%;top:"+top+"px;height:"+h+"px;background:"+col+";border-radius:6px'></div>"}
+  function mark(t,col,lab,top){return "<div style='position:absolute;left:"+pc(t)+"%;top:"+top+"px;bottom:0;width:0;border-left:2px dashed "+col+"'></div><div style='position:absolute;left:"+pc(t)+"%;top:0;transform:translateX(-50%);font-size:10px;font-weight:800;color:"+col+";white-space:nowrap'>"+lab+"</div>"}
+  var ticks="";[6,8,10,12,14,16].forEach(function(h){ticks+="<div style='position:absolute;left:"+pc(m(h))+"%;bottom:0;transform:translateX(-50%);font-size:10px;color:#94a3b8'>"+h+":00</div>"});
+  var h="<div style='position:relative;height:118px;margin:0 8px'>"
+   +bar(m(5,30),m(9,30),"#bae6fd",34,26)+bar(m(6),m(9),"#38bdf8",34,26)
+   +bar(m(12,10),m(16,10),"#bae6fd",34,26)+bar(m(12,40),m(15,40),"#38bdf8",34,26)
+   +"<div style='position:absolute;left:"+pc(m(7,30))+"%;top:34px;height:26px;width:3px;background:#0c4a6e'></div>"
+   +"<div style='position:absolute;left:"+pc(m(14,10))+"%;top:34px;height:26px;width:3px;background:#0c4a6e'></div>"
+   +mark(m(9),"#1a6bc4","方案A 9:00",12)
+   +mark(m(12,30),"#ef6c33","方案B 12:30",12)
+   +ticks+"</div>"
+   +"";
+  $("uzubar").innerHTML=h;
+  var rows=[
+   ["07:30","北流最速"],
+   ["09:00（方案A）","🟡 高峰後 1.5 小時，窗口邊緣"],
+   ["12:30（方案B）","🟡 高峰前 1 小時 40 分，窗口邊緣"],
+   ["13:00～14:30","🟢 最接近 14:10 高峰"]
+  ];
+  $("uzutb").innerHTML=rows.map(function(r){return "<tr><td class='py-2 pr-2 font-bold mc whitespace-nowrap'>"+r[0]+"</td><td class='py-2'>"+r[1]+"</td></tr>"}).join("");
+})();
 
 hydratePhotos();
 </script>
