@@ -28,7 +28,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","
 <body>
 <div class="shell">
 
-<header class="ph" id="hero" style="display:block;padding:40px 20px 24px;text-align:center;position:relative">
+<header class="ph" id="hero" data-wiki="瀬戸大橋" style="display:block;padding:40px 20px 24px;text-align:center;position:relative">
   <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,30,50,.45),rgba(15,30,50,.25) 60%,#f2f6fa)"></div>
   <div style="position:relative">
     <div style="font-size:11px;letter-spacing:.2em;font-weight:800">2026 AUTUMN ROAD TRIP IN JAPAN</div>
@@ -234,7 +234,7 @@ var SPOTS=[
 ];
 var FOOD=[
  ["神戶牛排 Ishida. 生田新道店","頂級 A5 神戶牛","🔥 已預約 11/28 13:30","主廚鐵板現煎 A5 神戶牛！（店址：下山手通 2-1-14 Arc Coast 大樓 2F，勿跑錯分店）","12 368 693*45","神戸ビーフ","神戸牛ステーキ Ishida. 生田新道店"],
- ["幸福鬆餅 淡路島度假村本店","海景舒芙蕾","10:35 開門免排隊","品嚐雲朵般綿密舒芙蕾鬆餅，必拍網美海景階梯、海景鞦韆與透明圓椅！","339 044 141*18","パンケーキ","幸せのパンケーキ 淡路島リゾート"],
+ ["幸福鬆餅 淡路島度假村本店","海景舒芙蕾","10:35 開門免排隊","品嚐雲朵般綿密舒芙蕾鬆餅，必拍網美海景階梯、海景鞦韆與透明圓椅！","339 044 141*18","淡路島","幸せのパンケーキ 淡路島リゾート"],
  ["大步危峽谷 餐廳 Mannaka","德島鄉土料理","09:00-17:00","與大步危遊覽船同棟（レストラン大歩危峡まんなか），搭船前後享用祖谷蕎麥麵與定食。","357 151 826*61","祖谷そば","レストラン大歩危峡まんなか"],
  ["骨付鳥 一鶴 高松店","香川名物","17:00-23:00","高松必吃帶骨烤雞腿！外皮酥脆肉汁飽滿，有富嚼勁的親鳥與鮮嫩多汁的雛鳥。","60 606 545*45","骨付鳥","骨付鳥 一鶴 高松店"],
  ["串燒酒場 若八屋 & 鶴丸烏龍麵","高松晚餐宵夜","人氣口袋名單","若八屋串燒 (17-24)、手打烏龍麵鶴丸 (20-02 必吃咖哩烏龍)、德島拉麵麵王 (11-24)。","60 636 193*37","讃岐うどん","手打ちうどん 鶴丸"]
@@ -311,30 +311,48 @@ function $(id){return document.getElementById(id)}
 function esc(s){return String(s).replace(/'/g,"\\'")}
 // 圖片佔位：先顯示漸層，再嘗試用維基百科抓圖，抓不到就維持漸層
 function photo(wiki,label,cls){
-  return "<div class='ph "+(cls||"h-44")+"' data-wiki='"+wiki+"'><span>📸 "+label+"</span></div>";
+  return "<div class='ph "+(cls||"h-44")+"' data-wiki='"+wiki+"'><span class='cap'>📸 "+label+"</span></div>";
 }
+var KW={"瀬戸大橋":"Great Seto Bridge","大歩危":"Oboke gorge","祖谷のかずら橋":"Iya Kazurabashi","鳴門の渦潮":"Naruto whirlpool","あわじ花さじき":"Awaji Hanasajiki","姫路城":"Himeji Castle","神戸三田プレミアム・アウトレット":"Kobe Sanda Premium Outlets","吉備津神社":"Kibitsu Shrine","屋島":"Yashima Takamatsu","神戸港":"Kobe Harborland","神戸ビーフ":"Kobe beef","淡路島":"Awaji Island","祖谷そば":"Iya soba","骨付鳥":"Honetsuki-dori","讃岐うどん":"Sanuki udon"};
 var wikiCache={};
-function wikiImg(t){
+function jget(u){return fetch(u).then(function(r){return r.ok?r.json():null}).catch(function(){return null})}
+function sumImg(lang,t){
+  return jget("https://"+lang+".wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(t)).then(function(j){
+    var o=[];if(j){if(j.thumbnail&&j.thumbnail.source)o.push(j.thumbnail.source);if(j.originalimage&&j.originalimage.source)o.push(j.originalimage.source)}return o;
+  });
+}
+function commonsImg(kw){
+  var u="https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=8&gsrsearch="+encodeURIComponent(kw)+"&prop=imageinfo&iiprop=url|mime&iiurlwidth=900&format=json&origin=*";
+  return jget(u).then(function(j){
+    var o=[];if(!j||!j.query)return o;
+    Object.keys(j.query.pages).map(function(k){return j.query.pages[k]}).sort(function(a,b){return a.index-b.index}).forEach(function(pg){
+      var ii=pg.imageinfo&&pg.imageinfo[0];if(ii&&/jpeg|png/.test(ii.mime)&&ii.thumburl)o.push(ii.thumburl);
+    });
+    return o;
+  });
+}
+function wikiImgs(t){
   if(!wikiCache[t]){
-    wikiCache[t]=fetch("https://ja.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(t))
-      .then(function(r){return r.ok?r.json():null})
-      .then(function(j){return j&&((j.originalimage&&j.originalimage.source)||(j.thumbnail&&j.thumbnail.source))||null})
-      .catch(function(){return null});
+    var kw=KW[t]||t;
+    wikiCache[t]=Promise.all([sumImg("ja",t),commonsImg(kw),sumImg("en",kw)]).then(function(r){
+      var seen={},out=[];r[0].concat(r[1],r[2]).forEach(function(u){if(!seen[u]){seen[u]=1;out.push(u)}});return out;
+    });
   }
   return wikiCache[t];
+}
+function setBg(el,urls,i){
+  if(i>=urls.length)return;
+  var im=new Image();
+  im.onload=function(){el.style.backgroundImage="url('"+urls[i]+"')";var s=el.querySelector("span.cap");if(s)s.style.display="none"};
+  im.onerror=function(){setBg(el,urls,i+1)};
+  im.src=urls[i];
 }
 function hydratePhotos(){
   document.querySelectorAll("[data-wiki]:not([data-done])").forEach(function(el){
     el.setAttribute("data-done","1");
-    wikiImg(el.getAttribute("data-wiki")).then(function(u){
-      if(!u)return;
-      var im=new Image();
-      im.onload=function(){el.style.backgroundImage="url('"+u+"')";var s=el.querySelector("span");if(s)s.style.display="none"};
-      im.src=u;
-    });
+    wikiImgs(el.getAttribute("data-wiki")).then(function(urls){setBg(el,urls,0)});
   });
 }
-var tt;
 function copyText(text,label){
   function done(){
     var t=$("toast");t.textContent="✅ 已複製 "+label+"："+text;t.style.opacity=1;
