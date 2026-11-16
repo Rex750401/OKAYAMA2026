@@ -440,7 +440,7 @@ $("hotels").innerHTML=HOTELS.map(function(h,i){
 // ============ 路線 ============
 $("route").innerHTML=DAYS_META.map(function(m){
   var c={b:"bg-blue-50 text-blue-700",t:"bg-teal-50 text-teal-700",s:"bg-slate-100 text-slate-700"}[m.tc];
-  return "<div class='py-2.5 flex justify-between gap-2 cursor-pointer' onclick='goDay("+m.n+",null)'><div><span class='font-extrabold' style='color:"+m.col+"'>"+m.ttl.split(" ")[0]+"</span> <span class='font-bold'>"+m.rs+"</span><p class='text-slate-500 text-[11px] mt-0.5'>"+m.rd+"</p></div><span class='shrink-0 text-[10px] font-bold px-2 py-0.5 rounded h-fit "+c+"'>"+m.tag+"</span></div>";
+  return "<div class='py-2.5 flex justify-between gap-2 cursor-pointer' onclick='goDay("+m.n+",null)'><div><span class='font-extrabold' style='color:"+m.col+"'>"+m.ttl.match(/^Day \d｜\d+\/\d+ \(.\)/)[0]+"</span> <span class='font-bold'>"+m.rs+"</span><p class='text-slate-500 text-[11px] mt-0.5'>"+m.rd+"</p></div><span class='shrink-0 text-[10px] font-bold px-2 py-0.5 rounded h-fit "+c+"'>"+m.tag+"</span></div>";
 }).join("");
 
 // ============ 每日行程 ============
